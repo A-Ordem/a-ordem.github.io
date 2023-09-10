@@ -113,7 +113,6 @@ MyMIDI.addProgramChange(0, 2, 0, 79)
 track = 0
 channel = 0
 time = 0  # In beats
-tempo = 120  # In BPM
 volume = 100  # 0-127, as per the MIDI standard
 
 for i, pitch in enumerate(array_of_note_numbers_r):
@@ -125,7 +124,6 @@ track = 1
 channel = 1
 time = 0  # In beats
 duration = 5  # In beats
-tempo = 120  # In BPM
 volume = 100  # 0-127, as per the MIDI standard
 
 for i, pitch in enumerate(array_of_note_numbers_g):
@@ -137,7 +135,6 @@ track = 2
 channel = 2
 time = 0  # In beats
 duration = 10  # In beats
-tempo = 120  # In BPM
 volume = 100  # 0-127, as per the MIDI standard
 
 for i, pitch in enumerate(array_of_note_numbers_b):
