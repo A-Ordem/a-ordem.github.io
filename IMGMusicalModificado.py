@@ -48,6 +48,29 @@ def note_to_number(note: str, octave: int) -> int:
 
     return note
 
+variavelDoMorais = 8
+width = im.size[0]
+heigth = im.size[1]
+lineHeigth = math.floor(heigth/variavelDoMorais)
+
+linha = []
+
+for x in range(width):
+    sumR = 0
+    sumG = 0
+    sumB = 0
+    for y in range(lineHeigth):
+        index = x+y*width
+        sumR += pix_val[index][0]
+        sumG += pix_val[index][1]
+        sumB += pix_val[index][2]
+    sumR = math.floor(sumR/lineHeigth)
+    sumG = math.floor(sumG/lineHeigth)
+    sumB = math.floor(sumB/lineHeigth)
+    linha.append((sumR,sumG,sumB))
+
+pix_val = linha
+
 pixel_list = [pix_val[0]]
 durations = []
 change = 50
@@ -55,10 +78,10 @@ duration = 0
 for i in range(len(pix_val)):
     duration += 1
 
-    if (abs(pixel_list[-1][0]-pix_val[i][0])>change or abs(pixel_list[-1][1]-pix_val[i][1])>change or abs(pixel_list[-1][1]-pix_val[i][1])>change):
+    if (abs(pixel_list[-1][0]-pix_val[i][0])>change or abs(pixel_list[-1][1]-pix_val[i][1])>change or abs(pixel_list[-1][2]-pix_val[i][2])>change):
         durations.append(duration)
         duration = 0
-        if len(pixel_list) > 10:
+        if len(pixel_list) > 4:
             break
         else:
             pixel_list.append(pix_val[i])
