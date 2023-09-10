@@ -53,23 +53,24 @@ width = im.size[0]
 heigth = im.size[1]
 lineHeigth = math.floor(heigth/variavelDoMorais)
 
-linha = []
+medias = []
 
-for x in range(width):
-    sumR = 0
-    sumG = 0
-    sumB = 0
-    for y in range(lineHeigth):
-        index = x+y*width
-        sumR += pix_val[index][0]
-        sumG += pix_val[index][1]
-        sumB += pix_val[index][2]
-    sumR = math.floor(sumR/lineHeigth)
-    sumG = math.floor(sumG/lineHeigth)
-    sumB = math.floor(sumB/lineHeigth)
-    linha.append((sumR,sumG,sumB))
+for line in range(variavelDoMorais):
+    for x in range(width):
+        sumR = 0
+        sumG = 0
+        sumB = 0
+        for y in range(lineHeigth):
+            index = line * lineHeigth * width + x + y * width
+            sumR += pix_val[index][0]
+            sumG += pix_val[index][1]
+            sumB += pix_val[index][2]
+        sumR = math.floor(sumR/lineHeigth)
+        sumG = math.floor(sumG/lineHeigth)
+        sumB = math.floor(sumB/lineHeigth)
+        medias.append((sumR,sumG,sumB))
 
-pix_val = linha
+pix_val = medias
 
 pixel_list = [pix_val[0]]
 durations = []
@@ -81,10 +82,9 @@ for i in range(len(pix_val)):
     if (abs(pixel_list[-1][0]-pix_val[i][0])>change or abs(pixel_list[-1][1]-pix_val[i][1])>change or abs(pixel_list[-1][2]-pix_val[i][2])>change):
         durations.append(duration)
         duration = 0
-        if len(pixel_list) > 4:
-            break
-        else:
-            pixel_list.append(pix_val[i])
+        pixel_list.append(pix_val[i])
+
+durations.append(duration)
 
 print(pixel_list)
 print(durations)
@@ -125,7 +125,7 @@ track = 0
 channel = 0
 time = 0  # In beats
 duration = 10  # In beats
-tempo = 120  # In BPM
+tempo = 240  # In BPM
 volume = 100  # 0-127, as per the MIDI standard
 MyMIDI.addTempo(track, time, tempo)
 
