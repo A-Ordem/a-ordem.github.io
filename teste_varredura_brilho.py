@@ -51,5 +51,5 @@ def plot_dynamic_brightness_curve(image_path):
     plt.show()
 
 # Substitua 'imagem.jpg' pelo caminho da sua imagem colorida
-image_path = 'imgtest_low.png'
+image_path = 'gradiente.jpg'
 plot_dynamic_brightness_curve(image_path)

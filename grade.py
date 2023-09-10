@@ -36,7 +36,7 @@ def abrir_imagem_e_desenhar_grade(janela, arquivo_imagem, linhas, colunas, propo
 # Configurações
 arquivo_imagem = "imgtest.png"
 linhas = 10  # Defina o número de linhas da grade
-colunas = 10  # Defina o número de colunas da grade
+colunas = 1  # Defina o número de colunas da grade
 proporcao = 0.5  # Defina a proporção em relação à imagem original (0.5 = metade do tamanho original)
 
 # Cria a janela
