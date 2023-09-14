@@ -48,43 +48,44 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function generateMusicFromPixelData(pixelData) {
         //console.log("Isso será exibido no console do navegador.");
+        
 
-        const player = new Tone.Player({
-            url: "https://tonejs.github.io/audio/berklee/gurgling_theremin_1.mp3",
-            loop: false,
-            autostart: true,
-        })
-        //create a distortion effect
-        const distortion = new Tone.Distortion(0.4).toDestination();
-        //connect a player to the distortion
-        player.connect(distortion);
-
+        const synth = new Tone.PolySynth(Tone.Synth).toDestination();
+        const now = Tone.now()
+        synth.triggerAttack("D4", now);
+        synth.triggerAttack("F4", now + 0.5);
+        synth.triggerAttack("A4", now + 1);
+        synth.triggerAttack("C5", now + 1.5);
+        synth.triggerAttack("E5", now + 2);
+        synth.triggerRelease(["D4", "F4", "A4", "C5", "E5"], now + 4);
+        
+        
+        const recorder = new Tone.Recorder();
+        const synth = new Tone.Synth().connect(recorder);
+        // start recording
+        recorder.start();
+        // generate a few notes
+        //synth.triggerAttackRelease("C3", 0.5);
+        // wait for the notes to end and stop the recording
+        setTimeout(async () => {
+            // the recorded audio is returned as a blob
+            const recording = await recorder.stop();
+            // download the recording by creating an anchor element and blob url
+            const url = URL.createObjectURL(recording);
+            const anchor = document.createElement("a");
+            anchor.download = "recording.webm";
+            anchor.href = url;
+            anchor.click();
+        }, 4000);
+        
         // Example:
-        const midiData = player;
+        //const midiData = now;
         return midiData;
     }
 
     
 
-    /*
-    const recorder = new Tone.Recorder();
-    const synth = new Tone.Synth().connect(recorder);
-    // start recording
-    recorder.start();
-    // generate a few notes
-    synth.triggerAttackRelease("C3", 0.5);
-    synth.triggerAttackRelease("C4", 0.5, "+1");
-    synth.triggerAttackRelease("C5", 0.5, "+2");
-    // wait for the notes to end and stop the recording
-    setTimeout(async () => {
-        // the recorded audio is returned as a blob
-        const recording = await recorder.stop();
-        // download the recording by creating an anchor element and blob url
-        const url = URL.createObjectURL(recording);
-        const anchor = document.createElement("a");
-        anchor.download = "recording.webm";
-        anchor.href = url;
-        anchor.click();
-    }, 4000);
-    */
+    
+    
+    
 });
