@@ -1,0 +1,25 @@
+body {
+    text-align: center;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+}
+
+canvas {
+    max-width: 100%;
+    height: auto;
+}
+
+button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+button:disabled {
+    background-color: gray;
+    cursor: not-allowed;
+}
