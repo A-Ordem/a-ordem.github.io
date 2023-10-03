@@ -1,17 +1,15 @@
-<!doctype html>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<html lang="en">
-
-<head>
-	<title>hrtf-panner-js example</title>
-	<script type="text/javascript" src="hrtf.js"></script>
-	<script type="text/javascript" src="example/main.js"></script>		
-</head>
-
-<body style="background-color:black">
-	<audio id="player" src="/example/trumpet.ogg" loop="loop" controls="controls">
-		Your browser does not support the audio element. Sorry.
-	</audio>
-</body>
-
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Tone</title>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js" integrity="sha512-jduERlz7En1IUZR54bqzpNI64AbffZWR//KJgF71SJ8D8/liKFZ+s1RxmUmB+bhCnIfzebdZsULwOrbVB5f3nQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    </head>
+    <body>
+        <div>
+            <input type="file" id="imageInput" accept="image/*">
+            <audio src="myCoolTrack.mp3"></audio>
+            <canvas id="myCanvas" width="1000" height="700"></canvas>
+        </div>
+        <script src="./script.js"></script>
+    </body>
 </html>
