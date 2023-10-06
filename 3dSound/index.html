@@ -73,42 +73,40 @@
 
           // Expose attack time & release time
           const sweepLength = 2;
-          function playSweep(time,freq) {
+          function playSweep(time, freq, panVal) {
             const osc = new OscillatorNode(audioCtx, {
               frequency: freq,
               type: "custom",
               periodicWave: wave,
             });
 
-            const sweepEnv = new GainNode(audioCtx);
-            sweepEnv.gain.cancelScheduledValues(time);
-            sweepEnv.gain.setValueAtTime(0, time);
-            sweepEnv.gain.linearRampToValueAtTime(1, time + attackTime);
-            sweepEnv.gain.linearRampToValueAtTime(
-              0,
-              time + sweepLength - releaseTime
-            );
+            // Create the node that controls the volume.
+            const gainNode = new GainNode(audioCtx);
+            gainNode.gain.value = 1;//0 - 2
 
-            osc.connect(sweepEnv).connect(audioCtx.destination);
+            // Create the node that controls the panning
+            const panner = new StereoPannerNode(audioCtx, { pan: 0 });
+            panner.pan.value = panVal; //-1 - 1
+
+            osc.connect(gainNode).connect(panner).connect(audioCtx.destination);
             osc.start(time);
             osc.stop(time + sweepLength);
           }
 
+          ////////////////////////////////////////////////////////// Tocando ///////////////////////////////////////////////////
           let time = 2
 
-          //wave.real = wavetable.real;
-          //wave.real = wavetable.imag;
           wave = new PeriodicWave(audioCtx, {
             real: wavetable.real,
             imag: wavetable.imag,
           });
-          playSweep(time, 300);
+          playSweep(time, 300,-1);
 
           wave = new PeriodicWave(audioCtx, {
             real: wavetableP.real,
             imag: wavetableP.imag,
           });
-          playSweep(time, 1000);
+          playSweep(time, 1000,1);
 
           ////////////////////////////////////////////////////////// Perigo ///////////////////////////////////////
 
@@ -135,24 +133,6 @@
       },
       false
     );
-
-    function init() {
-      audioCtx = new AudioContext();
-      track = new MediaElementAudioSourceNode(audioCtx, {
-        mediaElement: audioElement,
-      });
-
-      // Create the node that controls the volume.
-      const gainNode = new GainNode(audioCtx);
-      gainNode.gain.value = 1;//0 - 2
-
-      // Create the node that controls the panning
-      const panner = new StereoPannerNode(audioCtx, { pan: 0 });
-      panner.pan.value = 0; //-1 - 1
-
-      // connect our graph
-      track.connect(gainNode).connect(panner).connect(audioCtx.destination);
-    }
 
     // Selecione o elemento de entrada de arquivo
     const inputFile = document.getElementById('inputFile');
