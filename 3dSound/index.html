@@ -144,6 +144,8 @@
     const imageCanvas = document.getElementById('imageCanvas');
     let pixelData = null;
 
+    let memoryCard = []
+
     imageInput.addEventListener('change', function () {
       const file = imageInput.files[0];
       if (file && file.type.startsWith('image/')) {
@@ -160,18 +162,16 @@
             generateMusicButton.disabled = false;
 
             // Tamanho do quadrado de pixels (largura e altura)
-            const altura = Math.floor(img.height/7);
-            const largura = Math.floor(img.width/7);
+            const altura = Math.floor(img.height / 7);
+            const largura = Math.floor(img.width / 7);
 
             // Coordenadas do canto superior esquerdo do quadrado
             let startX = 0;
             let startY = 0;
 
-            let memoryCard = []
-
             for (let i = 0; i < 49; i++) {
-              startX = (i%7)*largura;
-              startY = Math.floor(i/7)*altura;
+              startX = (i % 7) * largura;
+              startY = Math.floor(i / 7) * altura;
 
               // Variáveis para calcular a soma dos valores de pixel
               let somaR = 0;
@@ -187,9 +187,9 @@
               }
 
               const numPixels = altura * largura;
-              const mediaR = Math.floor(somaR/numPixels);
-              const mediaG = Math.floor(somaG/numPixels);
-              const mediaB = Math.floor(somaB/numPixels);
+              const mediaR = Math.floor(somaR / numPixels);
+              const mediaG = Math.floor(somaG / numPixels);
+              const mediaB = Math.floor(somaB / numPixels);
               /*
               console.log(i);
               console.log("R: ");
@@ -200,7 +200,7 @@
               console.log(mediaB);
               console.log(" ");
               */
-              memoryCard.push(Math.floor((mediaR+mediaG+mediaB)/3))
+              memoryCard.push(Math.floor((mediaR + mediaG + mediaB) / 3))
             };
             console.log(memoryCard);
           };
@@ -210,11 +210,18 @@
     });
 
     generateMusicButton.addEventListener('click', function () {
-      if (!pixelData) {
+      if (!memoryCard) {
         alert('Please select an image first.');
         return;
       }
 
+      let filtrada = []
+      for (let i = 0; i < 49; i++) {
+        if (memoryCard[i] > 80) {
+          filtrada.push(memoryCard[i])
+          console.log(filtrada)
+        }
+      }
       // Generate music from pixelData
       const midiData = generateMusicFromPixelData(pixelData);
     });
@@ -222,7 +229,7 @@
     function generateMusicFromPixelData(pixelData) {
 
 
-      console.log(pixelData);
+
     }
 
     // Track credit: Outfoxing the Fox by Kevin MacLeod under Creative Commons
