@@ -10,8 +10,9 @@
 </head>
 
 <body>
-  <input type="file" id="inputFile" accept="image/*">
-  <img id="imagem" src="" alt="Imagem carregada">
+  <!--<input type="file" id="inputFile" accept="image/*">-->
+  <input type="file" id="imageInput" accept="image/*">
+
   <div id="boombox">
     <div class="boombox-handle"></div>
 
@@ -24,6 +25,8 @@
         <button data-playing="false" class="tape-controls-play" role="switch" aria-checked="false">
           <span>Play/Pause</span>
         </button>
+        <button id="generateMusic">Generate Music</button>
+        <canvas id="imageCanvas"></canvas>
       </section>
     </div>
     <!-- boombox-body -->
@@ -100,13 +103,13 @@
             real: wavetable.real,
             imag: wavetable.imag,
           });
-          playSweep(time, 300,-1);
+          playSweep(time, 300, -1);
 
           wave = new PeriodicWave(audioCtx, {
             real: wavetableP.real,
             imag: wavetableP.imag,
           });
-          playSweep(time, 1000,1);
+          playSweep(time, 1000, 1);
 
           ////////////////////////////////////////////////////////// Perigo ///////////////////////////////////////
 
@@ -135,22 +138,92 @@
     );
 
     // Selecione o elemento de entrada de arquivo
-    const inputFile = document.getElementById('inputFile');
+    const imageInput = document.getElementById('imageInput');
+    const musicPlayer = document.getElementById('musicPlayer');
+    const generateMusicButton = document.getElementById('generateMusic');
+    const imageCanvas = document.getElementById('imageCanvas');
+    let pixelData = null;
 
-    // Adicione um ouvinte de evento para quando o usuário selecionar uma imagem
-    inputFile.addEventListener('change', function (e) {
-      const imagem = document.getElementById('imagem');
-      const file = e.target.files[0]; // Obtenha o arquivo selecionado
+    imageInput.addEventListener('change', function () {
+      const file = imageInput.files[0];
+      if (file && file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          const img = new Image();
+          img.src = e.target.result;
+          img.onload = function () {
+            imageCanvas.width = img.width;
+            imageCanvas.height = img.height;
+            const ctx = imageCanvas.getContext('2d');
+            ctx.drawImage(img, 0, 0);
+            pixelData = ctx.getImageData(0, 0, img.width, img.height).data;
+            generateMusicButton.disabled = false;
 
-      if (file) {
-        // Crie um objeto URL para a imagem
-        const imageURL = URL.createObjectURL(file);
+            // Tamanho do quadrado de pixels (largura e altura)
+            const altura = Math.floor(img.height/7);
+            const largura = Math.floor(img.width/7);
 
-        // Atribua a URL da imagem ao elemento de imagem
-        imagem.src = imageURL;
+            // Coordenadas do canto superior esquerdo do quadrado
+            let startX = 0;
+            let startY = 0;
+
+            let memoryCard = []
+
+            for (let i = 0; i < 49; i++) {
+              startX = (i%7)*largura;
+              startY = Math.floor(i/7)*altura;
+
+              // Variáveis para calcular a soma dos valores de pixel
+              let somaR = 0;
+              let somaG = 0;
+              let somaB = 0;
+              for (let y = startY; y < startY + altura; y++) {
+                for (let x = startX; x < startX + largura; x++) {
+                  const index = (y * img.width + x) * 4;
+                  somaR += pixelData[index];
+                  somaG += pixelData[index + 1];
+                  somaB += pixelData[index + 2];
+                }
+              }
+
+              const numPixels = altura * largura;
+              const mediaR = Math.floor(somaR/numPixels);
+              const mediaG = Math.floor(somaG/numPixels);
+              const mediaB = Math.floor(somaB/numPixels);
+              /*
+              console.log(i);
+              console.log("R: ");
+              console.log(mediaR);
+              console.log("G: ");
+              console.log(mediaG);
+              console.log("B: ");
+              console.log(mediaB);
+              console.log(" ");
+              */
+              memoryCard.push(Math.floor((mediaR+mediaG+mediaB)/3))
+            };
+            console.log(memoryCard);
+          };
+        };
+        reader.readAsDataURL(file);
       }
     });
 
+    generateMusicButton.addEventListener('click', function () {
+      if (!pixelData) {
+        alert('Please select an image first.');
+        return;
+      }
+
+      // Generate music from pixelData
+      const midiData = generateMusicFromPixelData(pixelData);
+    });
+
+    function generateMusicFromPixelData(pixelData) {
+
+
+      console.log(pixelData);
+    }
 
     // Track credit: Outfoxing the Fox by Kevin MacLeod under Creative Commons
   </script>
