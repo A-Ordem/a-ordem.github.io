@@ -589,7 +589,7 @@ const wavetableSource = {
     ],
   };
   
-  const wavetableS = {
+  const wavetable = {
     real: Float32Array.from(wavetableSource.real),
     imag: Float32Array.from(wavetableSource.imag),
   };
