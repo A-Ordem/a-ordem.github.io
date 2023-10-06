@@ -61,57 +61,7 @@
         }
 
         if (playButton.dataset.playing === "false") {
-          //audioElement.play();
-          playButton.dataset.playing = "true";
 
-          ////////////////////////////////////////////////////////// Perigo ///////////////////////////////////////
-
-          let attackTime = 0.2;
-          let releaseTime = 0.5;
-
-          let wave = new PeriodicWave(audioCtx, {
-            real: wavetable.real,
-            imag: wavetable.imag,
-          });
-
-          // Expose attack time & release time
-          const sweepLength = 2;
-          function playSweep(time, freq, panVal) {
-            const osc = new OscillatorNode(audioCtx, {
-              frequency: freq,
-              type: "custom",
-              periodicWave: wave,
-            });
-
-            // Create the node that controls the volume.
-            const gainNode = new GainNode(audioCtx);
-            gainNode.gain.value = 1;//0 - 2
-
-            // Create the node that controls the panning
-            const panner = new StereoPannerNode(audioCtx, { pan: 0 });
-            panner.pan.value = panVal; //-1 - 1
-
-            osc.connect(gainNode).connect(panner).connect(audioCtx.destination);
-            osc.start(time);
-            osc.stop(time + sweepLength);
-          }
-
-          ////////////////////////////////////////////////////////// Tocando ///////////////////////////////////////////////////
-          let time = 2
-
-          wave = new PeriodicWave(audioCtx, {
-            real: wavetable.real,
-            imag: wavetable.imag,
-          });
-          playSweep(time, 300, -1);
-
-          wave = new PeriodicWave(audioCtx, {
-            real: wavetableP.real,
-            imag: wavetableP.imag,
-          });
-          playSweep(time, 1000, 1);
-
-          ////////////////////////////////////////////////////////// Perigo ///////////////////////////////////////
 
           // if track is playing pause it
         } else if (playButton.dataset.playing === "true") {
@@ -201,6 +151,7 @@
               console.log(" ");
               */
               memoryCard.push(Math.floor((mediaR + mediaG + mediaB) / 3))
+              memoryCard.push(i)
             };
             console.log(memoryCard);
           };
@@ -216,18 +167,76 @@
       }
 
       let filtrada = []
-      for (let i = 0; i < 49; i++) {
+      for (let i = 0; i < 98; i += 2) {
         if (memoryCard[i] > 80) {
           filtrada.push(memoryCard[i])
-          console.log(filtrada)
+          filtrada.push(memoryCard[i+1])
         }
       }
       // Generate music from pixelData
-      const midiData = generateMusicFromPixelData(pixelData);
+      console.log(filtrada)
+      const musica = generateMusicFromPixelData(filtrada);
     });
 
-    function generateMusicFromPixelData(pixelData) {
+    function generateMusicFromPixelData(pontos) {
 
+      //audioElement.play();
+      playButton.dataset.playing = "true";
+
+      ////////////////////////////////////////////////////////// Perigo ///////////////////////////////////////
+
+      let attackTime = 0.5;
+      let releaseTime = 0.5;
+
+      let wave = new PeriodicWave(audioCtx, {
+        real: wavetable.real,
+        imag: wavetable.imag,
+      });
+
+      // Expose attack time & release time
+      const sweepLength = 1;
+      function playSweep(time, freq, panVal) {
+        const osc = new OscillatorNode(audioCtx, {
+          frequency: freq,
+          type: "custom",
+          periodicWave: wave,
+        });
+
+        // Create the node that controls the volume.
+        const gainNode = new GainNode(audioCtx);
+        gainNode.gain.value = 1;//0 - 2
+
+        // Create the node that controls the panning
+        const panner = new StereoPannerNode(audioCtx, { pan: 0 });
+        panner.pan.value = panVal; //-1 - 1
+
+        osc.connect(gainNode).connect(panner).connect(audioCtx.destination);
+        osc.start(time);
+        osc.stop(time + sweepLength);
+      }
+
+      ////////////////////////////////////////////////////////// Tocando ///////////////////////////////////////////////////
+      let time = 2
+      /*
+      wave = new PeriodicWave(audioCtx, {
+        real: wavetable.real,
+        imag: wavetable.imag,
+      });
+      playSweep(time, 300, -1);
+
+      wave = new PeriodicWave(audioCtx, {
+        real: wavetableP.real,
+        imag: wavetableP.imag,
+      });
+      playSweep(time, 1000, 1);
+      */
+      
+      for (let i = 0; i < pontos.length; i += 2) {
+        let espacial = ((i+1 % 7)-4)/4
+        playSweep(time, 1000, espacial);
+      }
+
+      ////////////////////////////////////////////////////////// Perigo ///////////////////////////////////////
 
 
     }
