@@ -30,7 +30,6 @@
   </div>
 
   <!-- ------------------------------------------------------------------------------------ -->
-  <script src="wavetableP.js"></script>
   <script src="wavetable.js"></script>
   <script type="text/javascript">
     console.clear();
@@ -74,9 +73,9 @@
 
           // Expose attack time & release time
           const sweepLength = 2;
-          function playSweep(time) {
+          function playSweep(time,freq) {
             const osc = new OscillatorNode(audioCtx, {
-              frequency: 380,
+              frequency: freq,
               type: "custom",
               periodicWave: wave,
             });
@@ -103,13 +102,13 @@
             real: wavetable.real,
             imag: wavetable.imag,
           });
-          playSweep(time);
+          playSweep(time, 300);
 
           wave = new PeriodicWave(audioCtx, {
             real: wavetableP.real,
             imag: wavetableP.imag,
           });
-          playSweep(time);
+          playSweep(time, 1000);
 
           ////////////////////////////////////////////////////////// Perigo ///////////////////////////////////////
 
