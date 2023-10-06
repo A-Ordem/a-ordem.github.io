@@ -1,165 +1,180 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <title>Web Audio API examples: Basics</title>
-    <meta name="description" content="Audio basics demo for Web Audio API" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, shrink-to-fit=no"
-    />
-    <link rel="stylesheet" type="text/css" href="style.css" />
-  </head>
-  <body>
-    <div id="boombox">
-      <div class="boombox-handle"></div>
 
-      <div class="boombox-body">
-        <section class="master-controls">
-          <input
-            type="range"
-            id="volume"
-            class="control-volume"
-            min="0"
-            max="2"
-            value="1"
-            list="gain-vals"
-            step="0.01"
-            data-action="volume"
-          />
-          <datalist id="gain-vals">
-            <option value="0" label="min"></option>
-            <option value="2" label="max"></option>
-          </datalist>
+<head>
+  <meta charset="utf-8" />
+  <title>Web Audio API examples: Basics</title>
+  <meta name="description" content="Audio basics demo for Web Audio API" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <link rel="stylesheet" type="text/css" href="style.css" />
+</head>
 
-          <label for="volume">VOL</label>
+<body>
+  <input type="file" id="inputFile" accept="image/*">
+  <img id="imagem" src="" alt="Imagem carregada">
+  <div id="boombox">
+    <div class="boombox-handle"></div>
 
-          <input
-            type="range"
-            id="panner"
-            class="control-panner"
-            list="pan-vals"
-            min="-1"
-            max="1"
-            value="0"
-            step="0.01"
-            data-action="panner"
-          />
-          <datalist id="pan-vals">
-            <option value="-1" label="left"></option>
-            <option value="1" label="right"></option>
-          </datalist>
+    <div class="boombox-body">
+      <section class="tape">
+        <!-- <audio src="outfoxing.mp3" crossorigin="anonymous"></audio> -->
+        <audio src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/858/outfoxing.mp3" crossorigin="anonymous"></audio>
 
-          <label for="panner">PAN</label>
-
-        </section>
-
-        <section class="tape">
-          <!-- <audio src="outfoxing.mp3" crossorigin="anonymous"></audio> -->
-          <audio src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/858/outfoxing.mp3" crossorigin="anonymous"></audio>
-
-          <!-- 			type="audio/mpeg" -->
-
-          <button
-            data-playing="false"
-            class="tape-controls-play"
-            role="switch"
-            aria-checked="false"
-          >
-            <span>Play/Pause</span>
-          </button>
-        </section>
-      </div>
-      <!-- boombox-body -->
+        <!-- 			type="audio/mpeg" -->
+        <button data-playing="false" class="tape-controls-play" role="switch" aria-checked="false">
+          <span>Play/Pause</span>
+        </button>
+      </section>
     </div>
+    <!-- boombox-body -->
+  </div>
 
-    <script type="text/javascript">
-      console.clear();
+  <!-- ------------------------------------------------------------------------------------ -->
+  <script src="wavetableP.js"></script>
+  <script src="wavetableS.js"></script>
+  <script type="text/javascript">
+    console.clear();
 
-      // instigate our audio context
-      let audioCtx;
+    // instigate our audio context
+    //let audioCtx;
+    const audioCtx = new AudioContext();
 
-      // load some sound
-      const audioElement = document.querySelector("audio");
-      let track;
+    // load some sound
+    const audioElement = document.querySelector("audio");
+    let track;
 
-      const playButton = document.querySelector(".tape-controls-play");
+    const playButton = document.querySelector(".tape-controls-play");
 
-      // play pause audio
-      playButton.addEventListener(
-        "click",
-        () => {
-          if (!audioCtx) {
-            init();
+    // play pause audio
+    playButton.addEventListener(
+      "click",
+      () => {
+        if (!audioCtx) {
+          init();
+        }
+
+        // check if context is in suspended state (autoplay policy)
+        if (audioCtx.state === "suspended") {
+          audioCtx.resume();
+        }
+
+        if (playButton.dataset.playing === "false") {
+          //audioElement.play();
+          playButton.dataset.playing = "true";
+
+          ////////////////////////////////////////////////////////// Perigo ///////////////////////////////////////
+
+          let attackTime = 0.2;
+          let releaseTime = 0.5;
+
+          let wave = new PeriodicWave(audioCtx, {
+            real: wavetableS.real,
+            imag: wavetableS.imag,
+          });
+
+          // Expose attack time & release time
+          const sweepLength = 2;
+          function playSweep(time) {
+            const osc = new OscillatorNode(audioCtx, {
+              frequency: 380,
+              type: "custom",
+              periodicWave: wave,
+            });
+
+            const sweepEnv = new GainNode(audioCtx);
+            sweepEnv.gain.cancelScheduledValues(time);
+            sweepEnv.gain.setValueAtTime(0, time);
+            sweepEnv.gain.linearRampToValueAtTime(1, time + attackTime);
+            sweepEnv.gain.linearRampToValueAtTime(
+              0,
+              time + sweepLength - releaseTime
+            );
+
+            osc.connect(sweepEnv).connect(audioCtx.destination);
+            osc.start(time);
+            osc.stop(time + sweepLength);
           }
 
-          // check if context is in suspended state (autoplay policy)
-          if (audioCtx.state === "suspended") {
-            audioCtx.resume();
-          }
+          let time = 2
 
-          if (playButton.dataset.playing === "false") {
-            audioElement.play();
-            playButton.dataset.playing = "true";
-            // if track is playing pause it
-          } else if (playButton.dataset.playing === "true") {
-            audioElement.pause();
-            playButton.dataset.playing = "false";
-          }
+          //wave.real = wavetable.real;
+          //wave.real = wavetable.imag;
+          wave = PeriodicWave(audioCtx, {
+            real: wavetableS.real,
+            imag: wavetableS.imag,
+          });
+          playSweep(time);
 
-          // Toggle the state between play and not playing
-          let state =
-            playButton.getAttribute("aria-checked") === "true" ? true : false;
-          playButton.setAttribute("aria-checked", state ? "false" : "true");
-        },
-        false
-      );
+          wave = PeriodicWave(audioCtx, {
+            real: wavetableP.real,
+            imag: wavetableP.imag,
+          });
+          playSweep(time);
 
-      // If track ends
-      audioElement.addEventListener(
-        "ended",
-        () => {
+          ////////////////////////////////////////////////////////// Perigo ///////////////////////////////////////
+
+          // if track is playing pause it
+        } else if (playButton.dataset.playing === "true") {
+          //audioElement.pause();
           playButton.dataset.playing = "false";
-          playButton.setAttribute("aria-checked", "false");
-        },
-        false
-      );
+        }
 
-      function init() {
-        audioCtx = new AudioContext();
-        track = new MediaElementAudioSourceNode(audioCtx, {
-          mediaElement: audioElement,
-        });
+        // Toggle the state between play and not playing
+        let state =
+          playButton.getAttribute("aria-checked") === "true" ? true : false;
+        playButton.setAttribute("aria-checked", state ? "false" : "true");
+      },
+      false
+    );
 
-        // Create the node that controls the volume.
-        const gainNode = new GainNode(audioCtx);
+    // If track ends
+    audioElement.addEventListener(
+      "ended",
+      () => {
+        playButton.dataset.playing = "false";
+        playButton.setAttribute("aria-checked", "false");
+      },
+      false
+    );
 
-        const volumeControl = document.querySelector('[data-action="volume"]');
-        volumeControl.addEventListener(
-          "input",
-          () => {
-            gainNode.gain.value = volumeControl.value;
-          },
-          false
-        );
+    function init() {
+      audioCtx = new AudioContext();
+      track = new MediaElementAudioSourceNode(audioCtx, {
+        mediaElement: audioElement,
+      });
 
-        // Create the node that controls the panning
-        const panner = new StereoPannerNode(audioCtx, { pan: 0 });
+      // Create the node that controls the volume.
+      const gainNode = new GainNode(audioCtx);
+      gainNode.gain.value = 1;//0 - 2
 
-        const pannerControl = document.querySelector('[data-action="panner"]');
-        pannerControl.addEventListener(
-          "input",
-          () => {
-            panner.pan.value = pannerControl.value;
-          },
-          false
-        );
+      // Create the node that controls the panning
+      const panner = new StereoPannerNode(audioCtx, { pan: 0 });
+      panner.pan.value = 0; //-1 - 1
 
-        // connect our graph
-        track.connect(gainNode).connect(panner).connect(audioCtx.destination);
+      // connect our graph
+      track.connect(gainNode).connect(panner).connect(audioCtx.destination);
+    }
+
+    // Selecione o elemento de entrada de arquivo
+    const inputFile = document.getElementById('inputFile');
+
+    // Adicione um ouvinte de evento para quando o usuário selecionar uma imagem
+    inputFile.addEventListener('change', function (e) {
+      const imagem = document.getElementById('imagem');
+      const file = e.target.files[0]; // Obtenha o arquivo selecionado
+
+      if (file) {
+        // Crie um objeto URL para a imagem
+        const imageURL = URL.createObjectURL(file);
+
+        // Atribua a URL da imagem ao elemento de imagem
+        imagem.src = imageURL;
       }
+    });
 
-      // Track credit: Outfoxing the Fox by Kevin MacLeod under Creative Commons
-    </script>
-  </body>
+
+    // Track credit: Outfoxing the Fox by Kevin MacLeod under Creative Commons
+  </script>
+</body>
+
 </html>
