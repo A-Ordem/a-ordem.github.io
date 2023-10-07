@@ -6,7 +6,6 @@ const imageCanvas = document.getElementById('imageCanvas');
 const playButton = document.querySelector(".tape-controls-play");
 
 ////////////////////////////////////////////// Image Processing ///////////////////////////////////////////////////
-const audioCtx = new AudioContext();
 let pixelData = null;
 let memoryCard = [];
 let filtrada = [];
@@ -128,14 +127,18 @@ generateMusicButton.addEventListener('click', function () {
 let attackTime = 0.5;
 let releaseTime = 0.5;
 
-let wave = new PeriodicWave(audioCtx, {
-  real: wavetable.real,
-  imag: wavetable.imag,
-});
+
 
 // Expose attack time & release time
 const sweepLength = 1;
 function playSweep(time, freq, panVal, vol) {
+  const audioCtx = new AudioContext();
+  
+  let wave = new PeriodicWave(audioCtx, {
+    real: wavetable.real,
+    imag: wavetable.imag,
+  });
+
   console.log("boraaaa")
   const osc = new OscillatorNode(audioCtx, {
     frequency: freq,
