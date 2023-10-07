@@ -1,60 +1,13 @@
-// instigate our audio context
-//let audioCtx;
-const audioCtx = new AudioContext();
-
-// load some sound
-const audioElement = document.querySelector("audio");
-let track;
-
-const playButton = document.querySelector(".tape-controls-play");
-
-// play pause audio
-playButton.addEventListener(
-  "click",
-  () => {
-    if (!audioCtx) {
-      init();
-    }
-
-    // check if context is in suspended state (autoplay policy)
-    if (audioCtx.state === "suspended") {
-      audioCtx.resume();
-    }
-
-    if (playButton.dataset.playing === "false") {
-
-
-      // if track is playing pause it
-    } else if (playButton.dataset.playing === "true") {
-      //audioElement.pause();
-      playButton.dataset.playing = "false";
-    }
-
-    // Toggle the state between play and not playing
-    let state =
-      playButton.getAttribute("aria-checked") === "true" ? true : false;
-    playButton.setAttribute("aria-checked", state ? "false" : "true");
-  },
-  false
-);
-
-// If track ends
-audioElement.addEventListener(
-  "ended",
-  () => {
-    playButton.dataset.playing = "false";
-    playButton.setAttribute("aria-checked", "false");
-  },
-  false
-);
-
-// Selecione o elemento de entrada de arquivo
+////////////////////////////////////////////// UI ///////////////////////////////////////////////////
 const imageInput = document.getElementById('imageInput');
 const musicPlayer = document.getElementById('musicPlayer');
 const generateMusicButton = document.getElementById('generateMusic');
 const imageCanvas = document.getElementById('imageCanvas');
-let pixelData = null;
+const playButton = document.querySelector(".tape-controls-play");
 
+////////////////////////////////////////////// Image Processing ///////////////////////////////////////////////////
+const audioCtx = new AudioContext();
+let pixelData = null;
 let memoryCard = []
 
 imageInput.addEventListener('change', function () {
@@ -121,6 +74,7 @@ imageInput.addEventListener('change', function () {
   }
 });
 
+////////////////////////////////////////////// Image Converter ///////////////////////////////////////////////////
 generateMusicButton.addEventListener('click', function () {
   if (!memoryCard) {
     alert('Please select an image first.');
@@ -131,14 +85,14 @@ generateMusicButton.addEventListener('click', function () {
   for (let i = 0; i < 98; i += 2) {
     media += memoryCard[i]
   }
-  let filtro = (media/49)*2
+  let filtro = (media / 49) * 2
   console.log(filtro)
 
   let filtrada = []
   for (let i = 0; i < 98; i += 2) {
     if (memoryCard[i] > filtro) {//&& filtrada.length < 7
       filtrada.push(memoryCard[i])
-      filtrada.push(memoryCard[i+1])
+      filtrada.push(memoryCard[i + 1])
     }
   }
   // Generate music from pixelData
@@ -146,12 +100,10 @@ generateMusicButton.addEventListener('click', function () {
   const musica = generateMusicFromPixelData(filtrada);
 });
 
+ ////////////////////////////////////////////// Player ///////////////////////////////////////////////////
 function generateMusicFromPixelData(pontos) {
 
-  //audioElement.play();
   playButton.dataset.playing = "true";
-
-  ////////////////////////////////////////////////////////// Perigo ///////////////////////////////////////
 
   let attackTime = 0.5;
   let releaseTime = 0.5;
@@ -184,28 +136,20 @@ function generateMusicFromPixelData(pontos) {
     osc.stop(time + sweepLength);
   }
 
-  ////////////////////////////////////////////////////////// Tocando ///////////////////////////////////////////////////
-  let time = 2
-  /*
-  wave = new PeriodicWave(audioCtx, {
-    real: wavetable.real,
-    imag: wavetable.imag,
-  });
-  playSweep(time, 300, -1);
+  ////////////////////////////////////////////// Play Music ///////////////////////////////////////////////////
+  playButton.addEventListener(
+    "click",
+    () => {
+      let time = 2
 
-  wave = new PeriodicWave(audioCtx, {
-    real: wavetableP.real,
-    imag: wavetableP.imag,
-  });
-  playSweep(time, 1000, 1);
-  */
-  
-  for (let i = 0; i < pontos.length; i += 2) {
-    let lateral = ((i+1 % 7)-4)/4
-    let oitava = 3
-    let vertical = Math.floor(i/7)*oitava
-    const notas = [130, 150, 165, 175, 200, 221, 230]
-    playSweep(time, notas[vertical], lateral);
-  }
-
+      for (let i = 0; i < pontos.length; i += 2) {
+        let lateral = ((i + 1 % 7) - 4) / 4
+        let oitava = 3
+        let vertical = Math.floor(i / 7) * oitava
+        const notas = [130, 150, 165, 175, 200, 221, 230]
+        playSweep(time, notas[vertical], lateral);
+      }
+    },
+    false
+  );
 }
