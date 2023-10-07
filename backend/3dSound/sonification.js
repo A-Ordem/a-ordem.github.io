@@ -15,6 +15,7 @@ const Qx = 7;
 const Qy = 7;
 
 function loadVideo() {
+  playSweep(2, 230, 0, 1)
   console.log(framesList)
 
   for (let i = 0; i < framesList.length; i++) {
@@ -73,6 +74,8 @@ function loadVideo() {
 let composicao = []
 
 generateMusicButton.addEventListener('click', function () {
+  playSweep(2, 230, 0, 1)
+
   if (!memoryCard) {
     alert('Please select an image first.');
     return;
