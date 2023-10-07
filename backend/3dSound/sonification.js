@@ -11,6 +11,9 @@ let pixelData = null;
 let memoryCard = [];
 let filtrada = [];
 
+const Qx = 7;
+const Qy = 7;
+
 imageInput.addEventListener('change', function () {
   const file = imageInput.files[0];
   if (file && file.type.startsWith('image/')) {
@@ -27,16 +30,16 @@ imageInput.addEventListener('change', function () {
         generateMusicButton.disabled = false;
 
         // Tamanho do quadrado de pixels (largura e altura)
-        const altura = Math.floor(img.height / 7);
-        const largura = Math.floor(img.width / 7);
+        const altura = Math.floor(img.height / Qy);
+        const largura = Math.floor(img.width / Qx);
 
         // Coordenadas do canto superior esquerdo do quadrado
         let startX = 0;
         let startY = 0;
 
         for (let i = 0; i < 49; i++) {
-          startX = (i % 7) * largura;
-          startY = Math.floor(i / 7) * altura;
+          startX = (i % Qx) * largura;
+          startY = Math.floor(i / Qx) * altura;
 
           // Variáveis para calcular a soma dos valores de pixel
           let somaR = 0;
@@ -55,16 +58,7 @@ imageInput.addEventListener('change', function () {
           const mediaR = Math.floor(somaR / numPixels);
           const mediaG = Math.floor(somaG / numPixels);
           const mediaB = Math.floor(somaB / numPixels);
-          /*
-          console.log(i);
-          console.log("R: ");
-          console.log(mediaR);
-          console.log("G: ");
-          console.log(mediaG);
-          console.log("B: ");
-          console.log(mediaB);
-          console.log(" ");
-          */
+
           memoryCard.push(Math.floor((mediaR + mediaG + mediaB) / 3))
           memoryCard.push(i)
         };
@@ -83,17 +77,30 @@ generateMusicButton.addEventListener('click', function () {
   }
 
   let media = 0
-  for (let i = 0; i < 98; i += 2) {
+  for (let i = 0; i < 2*Qx*Qy; i += 2) {
     media += memoryCard[i]
   }
-  let filtro = (media / 49) * 2
+  media /= (Qx*Qy)
+  console.log(media)
+  let filtro = 0
+  for (let i = 0; i < 2*Qx*Qy; i += 2) {
+    filtro += Math.pow((media-memoryCard[i]), 2);
+  }
+  filtro = Math.sqrt(filtro)
+  filtro /= (Qx*Qy);
+  console.log(filtro)
+  filtro = 2*filtro + media
   console.log(filtro)
 
-  for (let i = 0; i < 98; i += 2) {
-    if (memoryCard[i] > filtro) {//&& filtrada.length < 7
-      filtrada.push(memoryCard[i])
-      filtrada.push(memoryCard[i + 1])
+  while (filtrada < 2*2) {
+    for (let i = 0; i < 2*Qx*Qy; i += 2) {
+      if (memoryCard[i] > filtro) {
+        filtrada.push(memoryCard[i])
+        filtrada.push(memoryCard[i + 1])
+      }
     }
+    filtro--;
+    console.log(filtro)
   }
   console.log(filtrada)
 });
@@ -136,13 +143,12 @@ playButton.addEventListener(
   () => {
     let time = 2
     for (let i = 0; i < filtrada.length; i += 2) {
-      let lateral = (((filtrada[i+1]) % 7) - 3) / 3
+      let lateral = (((filtrada[i + 1]) % Qx) - 3) / 3
       let oitava = 1
-      let vertical = Math.floor(filtrada[i+1] / 7)
-      let vol = (0.5*filtrada[i])/Math.max(...filtrada)
+      let vertical = Math.floor(filtrada[i + 1] / Qx)
+      let vol = (0.5 * filtrada[i]) / Math.max(...filtrada)
       const notas = [265, 250, 220, 200, 175, 165, 150, 130]
-      playSweep(time, notas[vertical]*oitava, lateral, vol);
+      playSweep(time, notas[vertical] * oitava, lateral, vol);
     }
   },
-  //false
 );
