@@ -70,6 +70,7 @@ function loadVideo() {
 };
 
 ////////////////////////////////////////////// Image Converter ///////////////////////////////////////////////////
+//let composicao = [[255,0,.05],[855,-1,.5],[655,1,.5]]
 let composicao = []
 
 generateMusicButton.addEventListener('click', function () {
@@ -121,6 +122,10 @@ generateMusicButton.addEventListener('click', function () {
     composicao.push(cd);
   }
   console.log(composicao)
+  //const texto = "Este é o conteúdo do arquivo de texto.";
+  const blob = new Blob([composicao], { type: "text/plain;charset=utf-8" });
+  saveAs(blob, "musical.txt");
+
 });
 
 ////////////////////////////////////////////// Player ///////////////////////////////////////////////////
@@ -165,16 +170,17 @@ playButton.addEventListener(
   "click",
   () => {
     let time = 2
-
+    playSweep(2, 230, 0, 1)
+    console.log("play")
     for (let frameS = 0; frameS < composicao.length; frameS++) {
       for (let i = 0; i < composicao[frameS].length; i += 3) {
         //playSweep(time, composicao[frameS][i], composicao[frameS][i + 1], composicao[frameS][i + 2])
         playSweep(2, 230, 0, 1)
-        /*
+
         setTimeout(function () {
           playSweep(time, composicao[frameS][i], composicao[frameS][i + 1], composicao[frameS][i + 2])
           console.log(time, composicao[frameS][i], composicao[frameS][i + 1], composicao[frameS][i + 2]);
-        }, i * 1000);*/
+        }, i * 1000);
       }
     }
   },
