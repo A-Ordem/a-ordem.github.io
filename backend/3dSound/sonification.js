@@ -6,7 +6,6 @@ const imageCanvas = document.getElementById('imageCanvas');
 const playButton = document.querySelector(".tape-controls-play");
 
 ////////////////////////////////////////////// Image Processing ///////////////////////////////////////////////////
-const audioCtx = new AudioContext();
 let pixelData = null;
 let memoryCard = [];
 let filtrada = [];
@@ -15,7 +14,6 @@ const Qx = 7;
 const Qy = 7;
 
 function loadVideo() {
-  playSweep(2, 230, 0, 1)
   console.log(framesList)
 
   for (let i = 0; i < framesList.length; i++) {
@@ -71,11 +69,10 @@ function loadVideo() {
 };
 
 ////////////////////////////////////////////// Image Converter ///////////////////////////////////////////////////
+//let composicao = [[255,0,.05],[855,-1,.5],[655,1,.5]]
 let composicao = []
 
 generateMusicButton.addEventListener('click', function () {
-  playSweep(2, 230, 0, 1)
-
   if (!memoryCard) {
     alert('Please select an image first.');
     return;
@@ -116,7 +113,6 @@ generateMusicButton.addEventListener('click', function () {
       let vertical = Math.floor(filtrada[i + 1] / Qx)
       let vol = (0.5 * filtrada[i]) / Math.max(...filtrada)
       const notas = [265, 250, 220, 200, 175, 165, 150, 130]
-      //playSweep(time, notas[vertical] * oitava, lateral, vol);
       cd.push(notas[vertical] * oitava, lateral, vol)
     }
     composicao.push(cd);
@@ -128,14 +124,18 @@ generateMusicButton.addEventListener('click', function () {
 let attackTime = 0.5;
 let releaseTime = 0.5;
 
-let wave = new PeriodicWave(audioCtx, {
-  real: wavetable.real,
-  imag: wavetable.imag,
-});
+
 
 // Expose attack time & release time
 const sweepLength = 1;
 function playSweep(time, freq, panVal, vol) {
+  const audioCtx = new AudioContext();
+
+  let wave = new PeriodicWave(audioCtx, {
+    real: wavetable.real,
+    imag: wavetable.imag,
+  });
+
   console.log("boraaaa")
   const osc = new OscillatorNode(audioCtx, {
     frequency: freq,
@@ -162,17 +162,14 @@ playButton.addEventListener(
   "click",
   () => {
     let time = 2
-
+    console.log("play")
     for (let frameS = 0; frameS < composicao.length; frameS++) {
-      for (let i = 0; i < composicao[frameS].length; i += 3) {
-        //playSweep(time, composicao[frameS][i], composicao[frameS][i + 1], composicao[frameS][i + 2])
-        playSweep(2, 230, 0, 1)
-        /*
-        setTimeout(function () {
+      setTimeout(function () {
+        for (let i = 0; i < composicao[frameS].length; i += 3) {
           playSweep(time, composicao[frameS][i], composicao[frameS][i + 1], composicao[frameS][i + 2])
           console.log(time, composicao[frameS][i], composicao[frameS][i + 1], composicao[frameS][i + 2]);
-        }, i * 1000);*/
-      }
+        }
+      }, frameS * 1000);
     }
   },
 );
