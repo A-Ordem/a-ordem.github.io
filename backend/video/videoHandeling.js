@@ -43,8 +43,6 @@ function extractFrames(video) {
         displayCurrentFrame();
         loadVideo();
       }, 5000); // 1000 milissegundos = 1 segundos
-    playSweep(2, 230, -1, 1)
-    playSweep(2, 830, 1, 1)
 }
 
 document.getElementById("prevButton").addEventListener("click", function () {

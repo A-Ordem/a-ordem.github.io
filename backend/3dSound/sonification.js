@@ -14,7 +14,6 @@ const Qx = 7;
 const Qy = 7;
 
 function loadVideo() {
-  playSweep(2, 230, 0, 1)
   console.log(framesList)
 
   for (let i = 0; i < framesList.length; i++) {
@@ -74,8 +73,6 @@ function loadVideo() {
 let composicao = []
 
 generateMusicButton.addEventListener('click', function () {
-  playSweep(2, 230, 0, 1)
-
   if (!memoryCard) {
     alert('Please select an image first.');
     return;
@@ -116,16 +113,11 @@ generateMusicButton.addEventListener('click', function () {
       let vertical = Math.floor(filtrada[i + 1] / Qx)
       let vol = (0.5 * filtrada[i]) / Math.max(...filtrada)
       const notas = [265, 250, 220, 200, 175, 165, 150, 130]
-      //playSweep(time, notas[vertical] * oitava, lateral, vol);
       cd.push(notas[vertical] * oitava, lateral, vol)
     }
     composicao.push(cd);
   }
   console.log(composicao)
-  //const texto = "Este é o conteúdo do arquivo de texto.";
-  const blob = new Blob([composicao], { type: "text/plain;charset=utf-8" });
-  saveAs(blob, "musical.txt");
-
 });
 
 ////////////////////////////////////////////// Player ///////////////////////////////////////////////////
@@ -138,7 +130,7 @@ let releaseTime = 0.5;
 const sweepLength = 1;
 function playSweep(time, freq, panVal, vol) {
   const audioCtx = new AudioContext();
-  
+
   let wave = new PeriodicWave(audioCtx, {
     real: wavetable.real,
     imag: wavetable.imag,
@@ -170,18 +162,14 @@ playButton.addEventListener(
   "click",
   () => {
     let time = 2
-    playSweep(2, 230, 0, 1)
     console.log("play")
     for (let frameS = 0; frameS < composicao.length; frameS++) {
-      for (let i = 0; i < composicao[frameS].length; i += 3) {
-        //playSweep(time, composicao[frameS][i], composicao[frameS][i + 1], composicao[frameS][i + 2])
-        playSweep(2, 230, 0, 1)
-
-        setTimeout(function () {
+      setTimeout(function () {
+        for (let i = 0; i < composicao[frameS].length; i += 3) {
           playSweep(time, composicao[frameS][i], composicao[frameS][i + 1], composicao[frameS][i + 2])
           console.log(time, composicao[frameS][i], composicao[frameS][i + 1], composicao[frameS][i + 2]);
-        }, i * 1000);
-      }
+        }
+      }, frameS * 1000);
     }
   },
 );
