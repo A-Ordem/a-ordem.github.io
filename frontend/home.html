@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Fly Through Sonification</title>
+        <link rel="stylesheet" type="text/css" href="style.css" />
+    </head>
+    <body>
+        <div class="container">
+            <!-- Sound Part -->
+            <div class="right-div">
+                <div id="cratingSound">
+                    <h1>Creating Sound</h1>
+                    <input type="file" id="imageInput" accept="image/*">
+
+                    <div id="boombox">
+                    <div class="boombox-handle"></div>
+                
+                    <div class="boombox-body">
+                        <section class="tape">
+                        <!-- <audio src="outfoxing.mp3" crossorigin="anonymous"></audio> -->
+                        <audio src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/858/outfoxing.mp3" crossorigin="anonymous"></audio>
+                
+                        <!-- 			type="audio/mpeg" -->
+                        <button data-playing="false" class="tape-controls-play" role="switch" aria-checked="false">
+                            <span>Play Music</span>
+                        </button>
+                        <button id="generateMusic">Generate Music</button>
+                        <canvas id="imageCanvas"></canvas>
+                        </section>
+                    </div>
+                    <!-- boombox-body -->
+                    </div>
+                
+                    <!-- ------------------------------------------------------------------------------------ -->
+                    <script src="/backend/3dSound/wavetable.js"></script>
+                    <script src="/backend/3dSound/sonification.js"></script>
+                </div>
+            </div>
+            <!-- Video part -->
+            <div class="left-div">
+            <h1>Video Frame Extraction</h1>
+
+            <input type="file" accept="video/*" id="videoInput">
+            <div id="frames"></div>
+            <button id="prevButton">Previous</button>
+            <button id="nextButton">Next</button>
+
+            <script src="/backend/video/videoHandeling.js"></script>
+            </div>
+        </div>
+
+    </body>
+</html>
