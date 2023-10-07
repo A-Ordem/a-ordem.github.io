@@ -171,10 +171,11 @@
         media += memoryCard[i]
       }
       let filtro = (media/49)*2
+      console.log(filtro)
 
       let filtrada = []
       for (let i = 0; i < 98; i += 2) {
-        if (memoryCard[i] > filtro && filtrada.length < 7) {
+        if (memoryCard[i] > filtro) {//&& filtrada.length < 7
           filtrada.push(memoryCard[i])
           filtrada.push(memoryCard[i+1])
         }
