@@ -105,7 +105,7 @@ generateMusicButton.addEventListener('click', function () {
       console.log(filtro)
     }
     console.log(filtrada)
-    
+
     let cd = [];
     for (let i = 0; i < filtrada.length; i += 2) {
       let lateral = (((filtrada[i + 1]) % Qx) - 3) / 3
@@ -133,7 +133,7 @@ let wave = new PeriodicWave(audioCtx, {
 // Expose attack time & release time
 const sweepLength = 1;
 function playSweep(time, freq, panVal, vol) {
-
+  console.log("boraaaa")
   const osc = new OscillatorNode(audioCtx, {
     frequency: freq,
     type: "custom",
@@ -158,14 +158,17 @@ function playSweep(time, freq, panVal, vol) {
 playButton.addEventListener(
   "click",
   () => {
-    let time = 1
+    let time = 2
 
     for (let frameS = 0; frameS < composicao.length; frameS++) {
       for (let i = 0; i < composicao[frameS].length; i += 3) {
+        //playSweep(time, composicao[frameS][i], composicao[frameS][i + 1], composicao[frameS][i + 2])
+        playSweep(2, 230, 0, 1)
+        /*
         setTimeout(function () {
           playSweep(time, composicao[frameS][i], composicao[frameS][i + 1], composicao[frameS][i + 2])
           console.log(time, composicao[frameS][i], composicao[frameS][i + 1], composicao[frameS][i + 2]);
-        }, i * 1000);
+        }, i * 1000);*/
       }
     }
   },
