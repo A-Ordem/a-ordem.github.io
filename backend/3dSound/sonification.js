@@ -8,7 +8,8 @@ const playButton = document.querySelector(".tape-controls-play");
 ////////////////////////////////////////////// Image Processing ///////////////////////////////////////////////////
 const audioCtx = new AudioContext();
 let pixelData = null;
-let memoryCard = []
+let memoryCard = [];
+let filtrada = [];
 
 imageInput.addEventListener('change', function () {
   const file = imageInput.files[0];
@@ -88,68 +89,62 @@ generateMusicButton.addEventListener('click', function () {
   let filtro = (media / 49) * 2
   console.log(filtro)
 
-  let filtrada = []
   for (let i = 0; i < 98; i += 2) {
     if (memoryCard[i] > filtro) {//&& filtrada.length < 7
       filtrada.push(memoryCard[i])
       filtrada.push(memoryCard[i + 1])
     }
   }
-  // Generate music from pixelData
   console.log(filtrada)
-  const musica = generateMusicFromPixelData(filtrada);
 });
 
- ////////////////////////////////////////////// Player ///////////////////////////////////////////////////
-function generateMusicFromPixelData(pontos) {
+////////////////////////////////////////////// Player ///////////////////////////////////////////////////
+let attackTime = 0.5;
+let releaseTime = 0.5;
 
-  playButton.dataset.playing = "true";
+let wave = new PeriodicWave(audioCtx, {
+  real: wavetable.real,
+  imag: wavetable.imag,
+});
 
-  let attackTime = 0.5;
-  let releaseTime = 0.5;
+// Expose attack time & release time
+const sweepLength = 1;
+function playSweep(time, freq, panVal, vol) {
 
-  let wave = new PeriodicWave(audioCtx, {
-    real: wavetable.real,
-    imag: wavetable.imag,
+  const osc = new OscillatorNode(audioCtx, {
+    frequency: freq,
+    type: "custom",
+    periodicWave: wave,
   });
 
-  // Expose attack time & release time
-  const sweepLength = 1;
-  function playSweep(time, freq, panVal) {
+  // Create the node that controls the volume.
+  const gainNode = new GainNode(audioCtx);
+  gainNode.gain.value = vol
 
-    const osc = new OscillatorNode(audioCtx, {
-      frequency: freq,
-      type: "custom",
-      periodicWave: wave,
-    });
+  // Create the node that controls the panning
+  const panner = new StereoPannerNode(audioCtx, { pan: 0 });
+  panner.pan.value = panVal; //-1 - 1
 
-    // Create the node that controls the volume.
-    const gainNode = new GainNode(audioCtx);
-    gainNode.gain.value = 0.5;//0 - 2
-
-    // Create the node that controls the panning
-    const panner = new StereoPannerNode(audioCtx, { pan: 0 });
-    panner.pan.value = panVal; //-1 - 1
-
-    osc.connect(gainNode).connect(panner).connect(audioCtx.destination);
-    osc.start(time);
-    osc.stop(time + sweepLength);
-  }
-
-  ////////////////////////////////////////////// Play Music ///////////////////////////////////////////////////
-  playButton.addEventListener(
-    "click",
-    () => {
-      let time = 2
-
-      for (let i = 0; i < pontos.length; i += 2) {
-        let lateral = ((i + 1 % 7) - 4) / 4
-        let oitava = 3
-        let vertical = Math.floor(i / 7) * oitava
-        const notas = [130, 150, 165, 175, 200, 221, 230]
-        playSweep(time, notas[vertical], lateral);
-      }
-    },
-    false
-  );
+  osc.connect(gainNode).connect(panner).connect(audioCtx.destination);
+  osc.start(time);
+  osc.stop(time + sweepLength);
 }
+
+////////////////////////////////////////////// Play Music ///////////////////////////////////////////////////
+playButton.addEventListener(
+  "click",
+  () => {
+    let time = 2
+    for (let i = 0; i < filtrada.length; i += 2) {
+      let lateral = (((filtrada[i+1]) % 7) - 3) / 3
+      console.log(lateral)
+      let oitava = 1
+      let vertical = Math.floor(filtrada[i+1] / 7) * oitava
+      let vol = (0.5*filtrada[i])/Math.max(...filtrada)
+      console.log(vol)
+      const notas = [130, 150, 165, 175, 200, 221, 230]
+      playSweep(time, notas[vertical], lateral, vol);
+    }
+  },
+  //false
+);
