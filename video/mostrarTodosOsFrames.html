@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Frame Extraction</title>
+</head>
+<body>
+    <h1>Video Frame Extraction</h1>
+
+    <input type="file" accept="video/*" id="videoInput">
+    <div id="frames"></div>
+
+    <script>
+        document.getElementById("videoInput").addEventListener("change", handleVideoSelect);
+
+        function handleVideoSelect(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const videoURL = URL.createObjectURL(file);
+                const videoElement = document.createElement("video");
+                videoElement.src = videoURL;
+                videoElement.onloadeddata = function() {
+                    extractFrames(videoElement);
+                };
+            }
+        }
+
+        function extractFrames(video) {
+            const canvas = document.createElement("canvas");
+            const context = canvas.getContext("2d");
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+
+            const framesDiv = document.getElementById("frames");
+
+            video.onseeked = function() {
+                context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                const frameDataURL = canvas.toDataURL("image/jpeg");
+                const frameImage = document.createElement("img");
+                frameImage.src = frameDataURL;
+                framesDiv.appendChild(frameImage);
+
+                // You can continue extracting frames by incrementing video.currentTime
+                if (video.currentTime < video.duration) {
+                    video.currentTime += 1; // Extracts frame every second, adjust as needed
+                }
+            };
+
+            // Start extracting frames from the beginning of the video
+            video.currentTime = 0;
+        }
+    </script>
+</body>
+</html>

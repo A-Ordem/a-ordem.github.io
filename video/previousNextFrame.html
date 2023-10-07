@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Frame Selector</title>
+</head>
+
+<body>
+    <h1>Select a Frame from the Video</h1>
+
+    <input type="file" accept="video/*" id="videoInput">
+    <div id="frameDisplay"></div>
+    <button onclick="showPreviousFrame()">Previous</button>
+    <button onclick="showNextFrame()">Next</button>
+
+    <script>
+        let frames = [];
+        let currentFrameIndex = 0;
+
+        document.getElementById("videoInput").addEventListener("change", handleVideoSelect);
+
+        function handleVideoSelect(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const videoURL = URL.createObjectURL(file);
+                const videoElement = document.createElement("video");
+                videoElement.src = videoURL;
+                videoElement.onloadeddata = function () {
+                    extractFrames(videoElement);
+                    showFrame(currentFrameIndex);
+                };
+            }
+        }
+
+        function extractFrames(video) {
+            const canvas = document.createElement("canvas");
+            const context = canvas.getContext("2d");
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+
+            const totalFrames = Math.floor(video.duration);
+            for (let i = 0; i < totalFrames; i++) {
+                video.currentTime = i;
+                context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                const frameDataURL = canvas.toDataURL("image/jpeg");
+                frames.push(frameDataURL);
+            }
+        }
+
+        function showFrame(index) {
+            const frameDisplay = document.getElementById("frameDisplay");
+            frameDisplay.innerHTML = "";
+            const frameImage = document.createElement("img");
+            frameImage.src = frames[index];
+            frameDisplay.appendChild(frameImage);
+            // Log the current frame index to the console
+            console.log("Current Frame Index:", index);
+        }
+
+        function showPreviousFrame() {
+            if (currentFrameIndex > 0) {
+                currentFrameIndex--;
+                showFrame(currentFrameIndex);
+            }
+        }
+
+        function showNextFrame() {
+            if (currentFrameIndex < frames.length - 1) {
+                currentFrameIndex++;
+                showFrame(currentFrameIndex);
+            }
+        }
+    </script>
+</body>
+
+</html>
