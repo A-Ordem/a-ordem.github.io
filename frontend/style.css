@@ -20,3 +20,17 @@
     transform: translate(-50%, -50%);
     /* Estilos da sua div centralizada */
   }
+
+  body {
+    background-image: url('/frontend/bg.png');
+    background-color: #cccccc;
+    color: white;
+
+    font-size: 12pt;
+    font-family: Baluda;
+    font-weight: bold;
+}
+
+  h1 {
+      color: white; /* Cor do texto em elementos <h1> */
+  }
