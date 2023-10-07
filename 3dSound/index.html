@@ -166,9 +166,15 @@
         return;
       }
 
+      let media = 0
+      for (let i = 0; i < 98; i += 2) {
+        media += memoryCard[i]
+      }
+      let filtro = (media/49)*2
+
       let filtrada = []
       for (let i = 0; i < 98; i += 2) {
-        if (memoryCard[i] > 80) {
+        if (memoryCard[i] > filtro && filtrada.length < 7) {
           filtrada.push(memoryCard[i])
           filtrada.push(memoryCard[i+1])
         }
@@ -196,6 +202,7 @@
       // Expose attack time & release time
       const sweepLength = 1;
       function playSweep(time, freq, panVal) {
+
         const osc = new OscillatorNode(audioCtx, {
           frequency: freq,
           type: "custom",
@@ -204,7 +211,7 @@
 
         // Create the node that controls the volume.
         const gainNode = new GainNode(audioCtx);
-        gainNode.gain.value = 1;//0 - 2
+        gainNode.gain.value = 0.5;//0 - 2
 
         // Create the node that controls the panning
         const panner = new StereoPannerNode(audioCtx, { pan: 0 });
@@ -232,12 +239,12 @@
       */
       
       for (let i = 0; i < pontos.length; i += 2) {
-        let espacial = ((i+1 % 7)-4)/4
-        playSweep(time, 1000, espacial);
+        let lateral = ((i+1 % 7)-4)/4
+        let oitava = 3
+        let vertical = Math.floor(i/7)*oitava
+        const notas = [130, 150, 165, 175, 200, 221, 230]
+        playSweep(time, notas[vertical], lateral);
       }
-
-      ////////////////////////////////////////////////////////// Perigo ///////////////////////////////////////
-
 
     }
 
