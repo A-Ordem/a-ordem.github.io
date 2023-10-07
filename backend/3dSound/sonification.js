@@ -137,13 +137,11 @@ playButton.addEventListener(
     let time = 2
     for (let i = 0; i < filtrada.length; i += 2) {
       let lateral = (((filtrada[i+1]) % 7) - 3) / 3
-      console.log(lateral)
       let oitava = 1
-      let vertical = Math.floor(filtrada[i+1] / 7) * oitava
+      let vertical = Math.floor(filtrada[i+1] / 7)
       let vol = (0.5*filtrada[i])/Math.max(...filtrada)
-      console.log(vol)
-      const notas = [130, 150, 165, 175, 200, 221, 230]
-      playSweep(time, notas[vertical], lateral, vol);
+      const notas = [265, 250, 220, 200, 175, 165, 150, 130]
+      playSweep(time, notas[vertical]*oitava, lateral, vol);
     }
   },
   //false
