@@ -34,14 +34,15 @@ function extractFrames(video) {
         if (video.currentTime < video.duration) {
             video.currentTime += 1; // Extracts frame every second, adjust as needed
         }
-        // else {
-        //     // All frames extracted, framesList now contains the frame data URLs
-        //     console.log(framesList);
-        // }
     };
 
     // Start extracting frames from the beginning of the video
     video.currentTime = 0;
+    setTimeout(function () {
+        displayCurrentFrame();
+        loadVideo();
+      }, 5000); // 1000 milissegundos = 1 segundos
+    
 }
 
 document.getElementById("prevButton").addEventListener("click", function () {
