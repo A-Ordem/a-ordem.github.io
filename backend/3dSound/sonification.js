@@ -88,7 +88,6 @@ generateMusicButton.addEventListener('click', function () {
   }
   filtro = Math.sqrt(filtro)
   filtro /= (Qx*Qy);
-  console.log(filtro)
   filtro = 2*filtro + media
   console.log(filtro)
 
