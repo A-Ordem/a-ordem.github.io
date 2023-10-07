@@ -69,7 +69,6 @@ function loadVideo() {
 };
 
 ////////////////////////////////////////////// Image Converter ///////////////////////////////////////////////////
-//let composicao = [[255,0,.05],[855,-1,.5],[655,1,.5]]
 let composicao = []
 
 generateMusicButton.addEventListener('click', function () {
@@ -124,8 +123,6 @@ generateMusicButton.addEventListener('click', function () {
 let attackTime = 0.5;
 let releaseTime = 0.5;
 
-
-
 // Expose attack time & release time
 const sweepLength = 1;
 function playSweep(time, freq, panVal, vol) {
@@ -136,7 +133,6 @@ function playSweep(time, freq, panVal, vol) {
     imag: wavetable.imag,
   });
 
-  console.log("boraaaa")
   const osc = new OscillatorNode(audioCtx, {
     frequency: freq,
     type: "custom",
@@ -164,6 +160,7 @@ playButton.addEventListener(
     let time = 2
     console.log("play")
     for (let frameS = 0; frameS < composicao.length; frameS++) {
+      console.log("Frame: ", frameS);
       setTimeout(function () {
         for (let i = 0; i < composicao[frameS].length; i += 3) {
           playSweep(time, composicao[frameS][i], composicao[frameS][i + 1], composicao[frameS][i + 2])
@@ -172,4 +169,4 @@ playButton.addEventListener(
       }, frameS * 1000);
     }
   },
-);
+);//de
