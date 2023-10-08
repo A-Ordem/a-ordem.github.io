@@ -11,7 +11,7 @@ let memoryCard = [];
 let filtrada = [];
 
 const Qx = 7;
-const Qy = 5;
+const Qy = 7;
 
 function loadVideo() {
   console.log(framesList)
@@ -20,6 +20,7 @@ function loadVideo() {
     const reader = new FileReader();
     const img = new Image();
     img.src = framesList[i];
+
     img.onload = function () {
       imageCanvas.width = img.width;
       imageCanvas.height = img.height;
@@ -89,7 +90,9 @@ generateMusicButton.addEventListener('click', function () {
       filtro += Math.pow((media - memoryCard[frameS][i]), 2);
     }
     filtro = Math.sqrt(filtro)
+    console.log(filtro)
     filtro /= (Qx * Qy);
+    console.log(filtro)
     filtro = 4 * filtro + media
     console.log(filtro)
 
@@ -123,8 +126,8 @@ generateMusicButton.addEventListener('click', function () {
 });
 
 ////////////////////////////////////////////// Player ///////////////////////////////////////////////////
-let attackTime = 0;
-let releaseTime = 0;
+//let attackTime = 0;
+//let releaseTime = 0;
 
 // Expose attack time & release time
 const sweepLength = 1;
@@ -158,18 +161,18 @@ function playSweep(frameS, time, freq, panVal, vol) {
 const AudioContext = window.AudioContext || window.webkitAudioContext;
 const audioCtx = new AudioContext();
 playButton.addEventListener('click', function () {
-    let time = 1
-    console.log("play")
-    audioCtx.resume()
-    for (let frameS = 0; frameS < composicao.length; frameS++) {
-      console.log("Frame: ", frameS);
-      for (let i = 0; i < composicao[frameS].length; i += 3) {
-        playSweep(frameS, time, composicao[frameS][i], composicao[frameS][i + 1], composicao[frameS][i + 2])
-        console.log(frameS, time, composicao[frameS][i], composicao[frameS][i + 1], composicao[frameS][i + 2]);
-      }
-      setTimeout(function () {
-        currentFrameIndex = frameS
-        displayCurrentFrame()
-      }, frameS * 1000);
+  let time = 1
+  console.log("play")
+  audioCtx.resume()
+  for (let frameS = 0; frameS < composicao.length; frameS++) {
+    console.log("Frame: ", frameS);
+    for (let i = 0; i < composicao[frameS].length; i += 3) {
+      playSweep(frameS, time, composicao[frameS][i], composicao[frameS][i + 1], composicao[frameS][i + 2])
+      console.log(frameS, time, composicao[frameS][i], composicao[frameS][i + 1], composicao[frameS][i + 2]);
     }
-  });
+    setTimeout(function () {
+      currentFrameIndex = frameS
+      displayCurrentFrame()
+    }, frameS * 1000);
+  }
+});
