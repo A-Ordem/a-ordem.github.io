@@ -113,7 +113,7 @@ generateMusicButton.addEventListener('click', function () {
       let lateral = (((filtrada[i + 1]) % Qx) - 3) / 3
       //let oitava = .5
       let vertical = Math.floor(filtrada[i + 1] / Qx)
-      let vol = (0.5 * filtrada[i]) / Math.max(...filtrada)
+      let vol = (0.2 * filtrada[i]) / Math.max(...filtrada)
       //const notas = [265, 250, 220, 200, 175, 165, 150, 130]
       const notas = ["C2", "B2", "A2", "G1", "F1", "E1", "D1", "C1"]
       //cd.push(notas[vertical] * oitava, lateral, vol)
@@ -157,6 +157,37 @@ function playSweep(frameS, time, freq, panVal, vol) {
 
 }
 
+function playSweep2(frameS) {
+
+  for (let i = 0; i < composicao[frameS].length; i += 3) {
+    if (frmaeS == 0) {
+      const panner = new Tone.Panner(0).toDestination();
+      const gainNode = new Tone.Gain(0).toDestination();
+      panner.pan.rampTo(composicao[frameS][i]);
+      gainNode.pan.rampTo(composicao[frameS][i]);
+      console.log("Inicio")
+    } else if (frmaeS + 1 == composicao.length) {
+      const panner = new Tone.Panner(composicao[frameS][i]).toDestination();
+      const gainNode = new Tone.Gain(composicao[frameS][i]).toDestination();
+      panner.pan.rampTo(0);
+      gainNode.pan.rampTo(0);
+      console.log("Fim")
+    } else {
+      const panner = new Tone.Panner(composicao[frameS][i]).toDestination();
+      const gainNode = new Tone.Gain(composicao[frameS][i]).toDestination();
+      panner.pan.rampTo(composicao[frameS + 1][i]);
+      gainNode.pan.rampTo(composicao[frameS + 1][i]);
+      console.log("Meio")
+    }
+  }
+  let config = {
+    type: "sine", // Tipo de onda (pode ser "sine", "sawtooth", "square", "triangle", etc.)
+    frequency: freq, //"C4" Frequência da nota (por exemplo, "C4" para a nota Dó na oitava 4)
+  }
+  console.log(config)
+  const osc = new Tone.Oscillator(config).connect(panner).connect(gainNode).connect(panner).start(frameS).stop(frameS + time);
+}
+
 ////////////////////////////////////////////// Play Music ///////////////////////////////////////////////////
 const AudioContext = window.AudioContext || window.webkitAudioContext;
 const audioCtx = new AudioContext();
@@ -167,12 +198,13 @@ playButton.addEventListener('click', function () {
   for (let frameS = 0; frameS < composicao.length; frameS++) {
     console.log("Frame: ", frameS);
     for (let i = 0; i < composicao[frameS].length; i += 3) {
-      playSweep(frameS, time, composicao[frameS][i], composicao[frameS][i + 1], composicao[frameS][i + 2])
+      //playSweep(frameS, time, composicao[frameS][i], composicao[frameS][i + 1], composicao[frameS][i + 2])
       console.log(frameS, time, composicao[frameS][i], composicao[frameS][i + 1], composicao[frameS][i + 2]);
     }
     setTimeout(function () {
       currentFrameIndex = frameS
       displayCurrentFrame()
+      playSweep2(frameS)
     }, frameS * 1000);
   }
 });
