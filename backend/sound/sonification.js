@@ -147,7 +147,7 @@ function playSweep(frameS, time, freq, panVal, vol) {
   //synth.set("detune", -1200);
   //panner.pan.rampTo(-1, 0.5);
 
-  
+
   let config = {
     frequency: freq, //"C4" Frequência da nota (por exemplo, "C4" para a nota Dó na oitava 4)
 
@@ -179,34 +179,35 @@ function playSweep(frameS, time, freq, panVal, vol) {
   */
 }
 
-function playSweep2(frameS, i) {
-  const panner = new Tone.Panner(0).toDestination();
-  const gainNode = new Tone.Gain(0).toDestination();
-
+function playSweep2(frameS, i, panner, gainNode) {
+  
+  /*
   if (frameS == 0) {
-    const panner = new Tone.Panner(0).toDestination();
-    const gainNode = new Tone.Gain(0).toDestination();
+    //const panner = new Tone.Panner(0).toDestination();
+    //const gainNode = new Tone.Gain(0).toDestination();
     panner.pan.rampTo(composicao[frameS][i + 1]);
-    //gainNode.gain.rampTo(composicao[frameS][i + 2]);
+    gainNode.gain.rampTo(composicao[frameS][i + 2]);
   } else if (frameS + 1 == composicao.length) {
-    const panner = new Tone.Panner(composicao[frameS][i + 1]).toDestination();
-    const gainNode = new Tone.Gain(composicao[frameS][i + 2]).toDestination();
+    //const panner = new Tone.Panner(composicao[frameS][i + 1]).toDestination();
+    //const gainNode = new Tone.Gain(composicao[frameS][i + 2]).toDestination();
     panner.pan.rampTo(0);
     gainNode.gain.rampTo(0);
   } else {
-    const panner = new Tone.Panner(composicao[frameS][i + 1]).toDestination();
-    const gainNode = new Tone.Gain(composicao[frameS][i + 2]).toDestination();
+    //const panner = new Tone.Panner(composicao[frameS][i + 1]).toDestination();
+    //const gainNode = new Tone.Gain(composicao[frameS][i + 2]).toDestination();
     panner.pan.rampTo(composicao[frameS + 1][i + 1]);
     gainNode.gain.rampTo(composicao[frameS + 1][i + 2]);
   }
-
+  */
   let time = 1
   //const gainNode = new Tone.Gain(0.4).toDestination();
   //const panner = new Tone.Panner(1).toDestination();
   //panner.pan.rampTo(-1, 0.5);
+  panner.pan.rampTo(composicao[frameS][i + 1]);
+  gainNode.gain.rampTo(composicao[frameS][i + 2]);
   let config = {
     type: "sine", // Tipo de onda (pode ser "sine", "sawtooth", "square", "triangle", etc.)
-    frequency: "C1", //"C4" Frequência da nota (por exemplo, "C4" para a nota Dó na oitava 4)
+    frequency: "C2", //"C4" Frequência da nota (por exemplo, "C4" para a nota Dó na oitava 4)
   }
   console.log(config)
   const osc = new Tone.Oscillator(config).connect(panner).connect(gainNode).connect(panner).start(frameS).stop(frameS + time);
@@ -220,6 +221,8 @@ playButton.addEventListener('click', function () {
   let time = 1
   console.log("play")
   audioCtx.resume()
+  const panner = new Tone.Panner(0).toDestination();
+  const gainNode = new Tone.Gain(0).toDestination();
   for (let frameS = 0; frameS < composicao.length; frameS++) {
     console.log("Frame: ", frameS);
     for (let i = 0; i < composicao[frameS].length; i += 3) {
@@ -231,7 +234,7 @@ playButton.addEventListener('click', function () {
       displayCurrentFrame()
       for (let i = 0; i < composicao[frameS].length; i += 3) {
         //playSweep(frameS, time, composicao[frameS][i], composicao[frameS][i + 1], composicao[frameS][i + 2])
-        playSweep2(frameS, i)
+        playSweep2(frameS, i, panner,gainNode)
       }
     }, frameS * 1000);
   }
