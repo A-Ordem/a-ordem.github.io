@@ -225,14 +225,14 @@ playButton.addEventListener('click', function () {
   for (let frameS = 0; frameS < composicao.length; frameS++) {
     console.log("Frame: ", frameS);
     for (let i = 0; i < composicao[frameS].length; i += 3) {
-      //playSweep(frameS, time, composicao[frameS][i], composicao[frameS][i + 1], composicao[frameS][i + 2])
+      playSweep(frameS, time, composicao[frameS][i], composicao[frameS][i + 1], composicao[frameS][i + 2])
       console.log(frameS, time, composicao[frameS][i], composicao[frameS][i + 1], composicao[frameS][i + 2]);
     }
     setTimeout(function () {
       currentFrameIndex = frameS
       displayCurrentFrame()
       for (let i = 0; i < composicao[frameS].length; i += 3) {
-        playSweep2(frameS, i)
+        //playSweep2(frameS, i)
       }
     }, frameS * 1000);
   }
