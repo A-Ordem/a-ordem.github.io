@@ -42,7 +42,7 @@ function extractFrames(video) {
     setTimeout(function () {
         displayCurrentFrame();
         loadVideo();
-      }, 5000); // 1000 milissegundos = 1 segundos
+      }, video.duration*1000/6); // 1000 milissegundos = 1 segundos
 }
     /*
 document.getElementById("prevButton").addEventListener("click", function () {
