@@ -207,7 +207,7 @@ function playSweep2(frameS, i, panner, gainNode) {
   gainNode.gain.rampTo(composicao[frameS][i + 2]);
   let config = {
     type: "sine", // Tipo de onda (pode ser "sine", "sawtooth", "square", "triangle", etc.)
-    frequency: "C2", //"C4" Frequência da nota (por exemplo, "C4" para a nota Dó na oitava 4)
+    frequency: composicao[frameS][i], //"C4" Frequência da nota (por exemplo, "C4" para a nota Dó na oitava 4)
   }
   console.log(config)
   const osc = new Tone.Oscillator(config).connect(panner).connect(gainNode).connect(panner).start(frameS).stop(frameS + time);
