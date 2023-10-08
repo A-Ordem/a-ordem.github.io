@@ -220,6 +220,7 @@ const audioCtx = new AudioContext();
 playButton.addEventListener('click', function () {
   let time = 1
   console.log("play")
+  audioCtx.suspend()
   audioCtx.resume()
   const panner = new Tone.Panner(0).toDestination();
   const gainNode = new Tone.Gain(0).toDestination();
