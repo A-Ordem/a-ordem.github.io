@@ -17,6 +17,7 @@ function loadVideo() {
   console.log(framesList)
 
   for (let i = 0; i < framesList.length; i++) {
+    const reader = new FileReader();
     const img = new Image();
     img.src = framesList[i];
 
@@ -180,7 +181,7 @@ function playSweep(frameS, time, freq, panVal, vol) {
 
 }
 
-function playSweep2(frameS,i) {
+function playSweep2(frameS, i) {
   const panner = new Tone.Panner(0).toDestination();
   //const gainNode = new Tone.Gain(0).toDestination();
 
@@ -231,7 +232,7 @@ playButton.addEventListener('click', function () {
       currentFrameIndex = frameS
       displayCurrentFrame()
       for (let i = 0; i < composicao[frameS].length; i += 3) {
-        //playSweep2(frameS,i)
+        //playSweep2(frameS, i)
       }
     }, frameS * 1000);
   }
