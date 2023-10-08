@@ -157,7 +157,7 @@ function playSweep(frameS, time, freq, panVal, vol) {
   fmSynth.triggerAttackRelease(freq, time)
 }
 
-function playSweep2(frameS, i, panner, gainNode, fmSynth) {
+function playSweep3(frameS, i, panner, gainNode, fmSynth) {
   let time = 1
   let freq = composicao[frameS][i]
   //const gainNode = new Tone.Gain(0.4).toDestination();
@@ -165,19 +165,67 @@ function playSweep2(frameS, i, panner, gainNode, fmSynth) {
   //panner.pan.rampTo(-1, 0.5);
   panner.pan.rampTo(composicao[frameS][i + 1]);
   gainNode.gain.rampTo(composicao[frameS][i + 2] * 0.2);
-  /*
+
   let config = {
     type: "sine", // Tipo de onda (pode ser "sine", "sawtooth", "square", "triangle", etc.)
     frequency: composicao[frameS][i], //"C4" Frequência da nota (por exemplo, "C4" para a nota Dó na oitava 4)
-  }*/
+  }
 
-  //const osc = new Tone.Oscillator(config).connect(panner).connect(gainNode).start(frameS).stop(frameS + time);
-  //osc.Oscillator(config).start(frameS).stop(frameS + time);
+  const osc = new Tone.Oscillator(config).connect(panner).connect(gainNode).start(frameS).stop(frameS + time);
+  //fmSynth.triggerAttackRelease(freq, time).toDestination()
+}
 
-  fmSynth.triggerAttackRelease(freq, time).toDestination()
+function playSweep2(frameS, i, a, b) {
+  let time = 1
+  const gainNode = new Tone.Gain(0.4).toDestination();
+  const panner = new Tone.Panner(1).toDestination();
+  panner.pan.rampTo(-1, 0.5);
+  //const panner = new Tone.Panner(0).toDestination();
+  //const gainNode = new Tone.Gain(0).toDestination();
+  //panner.pan.rampTo(composicao[frameS][i + 1]);
+  //gainNode.gain.rampTo(composicao[frameS][i + 2]);
+  let config = {
+    type: "sine", // Tipo de onda (pode ser "sine", "sawtooth", "square", "triangle", etc.)
+    frequency: composicao[frameS][i], //"C4" Frequência da nota (por exemplo, "C4" para a nota Dó na oitava 4)
+  }
+  console.log(config)
+  const osc = new Tone.Oscillator(config).connect(panner).connect(gainNode).start(frameS).stop(frameS + time);
 }
 
 ////////////////////////////////////////////// Play Music ///////////////////////////////////////////////////
+
+const AudioContext = window.AudioContext || window.webkitAudioContext;
+const audioCtx = new AudioContext();
+playButton.addEventListener('click', function () {
+  let time = 1
+  console.log("play")
+  audioCtx.suspend()
+  audioCtx.resume()
+  
+  for (let frameS = 0; frameS < composicao.length; frameS++) {
+    console.log("Frame: ", frameS);
+    for (let i = 0; i < composicao[frameS].length; i += 3) {
+      //playSweep(frameS, time, composicao[frameS][i], composicao[frameS][i + 1], composicao[frameS][i + 2])
+      playSweep2(frameS, i, 0, 1)
+      console.log(frameS, time, composicao[frameS][i], composicao[frameS][i + 1], composicao[frameS][i + 2]);
+    }
+    setTimeout(function () {
+      currentFrameIndex = frameS
+      displayCurrentFrame()
+      for (let i = 0; i < composicao[frameS].length; i += 3) {
+        playSweep(frameS, time, composicao[frameS][i], composicao[frameS][i + 1], composicao[frameS][i + 2])
+      }
+    }, frameS * 1000);
+  }
+});
+
+
+
+
+
+/*
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
 const AudioContext = window.AudioContext || window.webkitAudioContext;
 const audioCtx = new AudioContext();
 playButton.addEventListener('click', function () {
@@ -188,8 +236,7 @@ playButton.addEventListener('click', function () {
 
   const panner = new Tone.Panner(0).toDestination();
   const gainNode = new Tone.Gain(0).toDestination();
-  //const osc = new Tone.Oscillator().connect(panner).connect(gainNode).start(0);
-
+  
   let config = {
     harmonicity: 3, // Índice que controla a quantidade de modulação de frequência
     modulationIndex: 10, // Índice que controla a intensidade da modulação de frequência
@@ -205,8 +252,8 @@ playButton.addEventListener('click', function () {
     }
   }
 
-  Tone.Transport.start();
-  const fmSynth = new Tone.FMSynth(config).connect(panner).connect(gainNode);
+  //Tone.Transport.start();
+  //const fmSynth = new Tone.FMSynth(config).connect(panner).connect(gainNode);
 
   for (let frameS = 0; frameS < composicao.length; frameS++) {
     console.log("Frame: ", frameS);
@@ -219,11 +266,12 @@ playButton.addEventListener('click', function () {
       displayCurrentFrame()
       for (let i = 0; i < composicao[frameS].length; i += 3) {
         //playSweep(frameS, time, composicao[frameS][i], composicao[frameS][i + 1], composicao[frameS][i + 2])
-        playSweep2(frameS, i, panner, gainNode, fmSynth)
+        //playSweep2(frameS, i, panner, gainNode, fmSynth)
+        playSweep2(frameS, i, panner, gainNode)
       }
       if (currentFrameIndex == composicao.length - 1) {
         audioCtx.suspend()
       }
     }, frameS * 1000);
   }
-});
+});*/
