@@ -17,7 +17,6 @@ function loadVideo() {
   console.log(framesList)
 
   for (let i = 0; i < framesList.length; i++) {
-    const reader = new FileReader();
     const img = new Image();
     img.src = framesList[i];
 
