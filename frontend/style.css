@@ -22,7 +22,7 @@
   }
 
   body {
-    background-image: url('/frontend/bg.png');
+    background-image: url('/assets/bg.png');
     background-color: #cccccc;
     color: white;
 
