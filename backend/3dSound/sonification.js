@@ -120,8 +120,8 @@ generateMusicButton.addEventListener('click', function () {
 });
 
 ////////////////////////////////////////////// Player ///////////////////////////////////////////////////
-let attackTime = 0.5;
-let releaseTime = 0.5;
+let attackTime = .5;
+let releaseTime = .5;
 
 // Expose attack time & release time
 const sweepLength = 1;
@@ -157,7 +157,7 @@ function playSweep(time, freq, panVal, vol) {
 playButton.addEventListener(
   "click",
   () => {
-    let time = 2
+    let time = 1
     console.log("play")
     for (let frameS = 0; frameS < composicao.length; frameS++) {
       console.log("Frame: ", frameS);
