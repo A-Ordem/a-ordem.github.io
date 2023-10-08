@@ -11,7 +11,7 @@ let memoryCard = [];
 let filtrada = [];
 
 const Qx = 7;
-const Qy = 7;
+const Qy = 5;
 
 function loadVideo() {
   console.log(framesList)
@@ -76,7 +76,7 @@ generateMusicButton.addEventListener('click', function () {
     alert('Please select an image first.');
     return;
   }
-
+  
   for (let frameS = 0; frameS < framesList.length; frameS++) {
     let media = 0
     for (let i = 0; i < 2 * Qx * Qy; i += 2) {
@@ -90,10 +90,11 @@ generateMusicButton.addEventListener('click', function () {
     }
     filtro = Math.sqrt(filtro)
     filtro /= (Qx * Qy);
-    filtro = 2 * filtro + media
+    filtro = 4 * filtro + media
     console.log(filtro)
 
-    while (filtrada < 2 * 2) {
+    filtrada = []
+    while (filtrada.length < 2 * 2) {
       for (let i = 0; i < 2 * Qx * Qy; i += 2) {
         if (memoryCard[frameS][i] > filtro) {
           filtrada.push(memoryCard[frameS][i])
@@ -101,14 +102,13 @@ generateMusicButton.addEventListener('click', function () {
         }
       }
       filtro--;
-      console.log(filtro)
     }
     console.log(filtrada)
 
     let cd = [];
     for (let i = 0; i < filtrada.length; i += 2) {
       let lateral = (((filtrada[i + 1]) % Qx) - 3) / 3
-      let oitava = 1
+      let oitava = .5
       let vertical = Math.floor(filtrada[i + 1] / Qx)
       let vol = (0.5 * filtrada[i]) / Math.max(...filtrada)
       const notas = [265, 250, 220, 200, 175, 165, 150, 130]
@@ -117,19 +117,20 @@ generateMusicButton.addEventListener('click', function () {
     composicao.push(cd);
   }
   console.log(composicao)
+  
 });
 
 ////////////////////////////////////////////// Player ///////////////////////////////////////////////////
-let attackTime = .5;
-let releaseTime = .5;
+let attackTime = 0;
+let releaseTime = 0;
 
 // Expose attack time & release time
 const sweepLength = 1;
-function playSweep(time, freq, panVal, vol) {
-  const audioCtx = new AudioContext();
+function playSweep(time, freq, panVal, vol,audioCtx) {
+  //const audioCtx = new AudioContext();
 
   let wave = new PeriodicWave(audioCtx, {
-    real: wavetable.real,
+    real: wavetable.real,//chage here
     imag: wavetable.imag,
   });
 
@@ -148,8 +149,10 @@ function playSweep(time, freq, panVal, vol) {
   panner.pan.value = panVal; //-1 - 1
 
   osc.connect(gainNode).connect(panner).connect(audioCtx.destination);
-  osc.start(time);
-  osc.stop(time + sweepLength);
+  //osc.start(time);
+ // osc.stop(time + sweepLength);
+  osc.start(0);
+  osc.stop(time);
 }
 
 ////////////////////////////////////////////// Play Music ///////////////////////////////////////////////////
@@ -159,12 +162,16 @@ playButton.addEventListener(
   () => {
     let time = 1
     console.log("play")
+    const audioCtx = new AudioContext();
     for (let frameS = 0; frameS < composicao.length; frameS++) {
-      console.log("Frame: ", frameS);
       setTimeout(function () {
+        console.log("Frame: ", frameS);
         for (let i = 0; i < composicao[frameS].length; i += 3) {
-          playSweep(time, composicao[frameS][i], composicao[frameS][i + 1], composicao[frameS][i + 2])
+          
+          playSweep(time, composicao[frameS][i], composicao[frameS][i + 1], composicao[frameS][i + 2],audioCtx)
           console.log(time, composicao[frameS][i], composicao[frameS][i + 1], composicao[frameS][i + 2]);
+          currentFrameIndex = frameS
+          displayCurrentFrame()
         }
       }, frameS * 1000);
     }
