@@ -24,10 +24,10 @@ function loadVideo() {
     img.onload = function () {
       imageCanvas.width = img.width;
       imageCanvas.height = img.height;
+
       const ctx = imageCanvas.getContext('2d');
       ctx.drawImage(img, 0, 0);
       pixelData = ctx.getImageData(0, 0, img.width, img.height).data;
-      generateMusicButton.disabled = false;
 
       // Tamanho do quadrado de pixels (largura e altura)
       const altura = Math.floor(img.height / Qy);
@@ -147,45 +147,72 @@ function playSweep(frameS, time, freq, panVal, vol) {
   //synth.set("detune", -1200);
   //panner.pan.rampTo(-1, 0.5);
 
+  /*
+  let config = {
+    frequency: freq, //"C4" Frequência da nota (por exemplo, "C4" para a nota Dó na oitava 4)
+
+    harmonicity: 3, // Índice que controla a quantidade de modulação de frequência
+    modulationIndex: 10, // Índice que controla a intensidade da modulação de frequência
+    detune: 0, // Alteração fina na afinação da nota em cents
+    oscillator: {
+      type: "sine" // Tipo de onda do operador de modulação
+    },
+    envelope: {
+      attack: 0.05, // Duração do ataque em segundos
+      decay: 0.2, // Duração do decay em segundos
+      sustain: 0.5, // Nível de sustain (de 0 a 1)
+      release: 1 // Duração do release em segundos
+    }
+  }
+  console.log(config)
+  const fmSynth = new Tone.FMSynth(config).connect(panner).connect(gainNode);
+  fmSynth.sync();
+  fmSynth.triggerAttackRelease(freq, time)
+  Tone.Transport.start();*/
+
   let config = {
     type: "sine", // Tipo de onda (pode ser "sine", "sawtooth", "square", "triangle", etc.)
     frequency: freq, //"C4" Frequência da nota (por exemplo, "C4" para a nota Dó na oitava 4)
   }
   console.log(config)
+
   const osc = new Tone.Oscillator(config).connect(panner).connect(gainNode).connect(panner).start(frameS).stop(frameS + time);
   //const synth = new Tone.PolySynth().connect(panner).connect(gainNode).start(frameS).stop(frameS + time);
 
 }
 
-function playSweep2(frameS) {
+function playSweep2(frameS,i) {
+  const panner = new Tone.Panner(0).toDestination();
+  //const gainNode = new Tone.Gain(0).toDestination();
 
-  for (let i = 0; i < composicao[frameS].length; i += 3) {
-    if (frmaeS == 0) {
-      const panner = new Tone.Panner(0).toDestination();
-      const gainNode = new Tone.Gain(0).toDestination();
-      panner.pan.rampTo(composicao[frameS][i]);
-      gainNode.pan.rampTo(composicao[frameS][i]);
-      console.log("Inicio")
-    } else if (frmaeS + 1 == composicao.length) {
-      const panner = new Tone.Panner(composicao[frameS][i]).toDestination();
-      const gainNode = new Tone.Gain(composicao[frameS][i]).toDestination();
-      panner.pan.rampTo(0);
-      gainNode.pan.rampTo(0);
-      console.log("Fim")
-    } else {
-      const panner = new Tone.Panner(composicao[frameS][i]).toDestination();
-      const gainNode = new Tone.Gain(composicao[frameS][i]).toDestination();
-      panner.pan.rampTo(composicao[frameS + 1][i]);
-      gainNode.pan.rampTo(composicao[frameS + 1][i]);
-      console.log("Meio")
-    }
+  if (frameS == 0) {
+    const panner = new Tone.Panner(0).toDestination();
+    //const gainNode = new Tone.Gain(0).toDestination();
+    panner.pan.rampTo(composicao[frameS][i + 1]);
+    //gainNode.gain.rampTo(composicao[frameS][i + 2]);
+  } else if (frameS + 1 == composicao.length) {
+    const panner = new Tone.Panner(composicao[frameS][i + 1]).toDestination();
+    //const gainNode = new Tone.Gain(composicao[frameS][i + 2]).toDestination();
+    panner.pan.rampTo(0);
+    //gainNode.gain.rampTo(0);
+  } else {
+    const panner = new Tone.Panner(composicao[frameS][i + 1]).toDestination();
+    //const gainNode = new Tone.Gain(composicao[frameS][i + 2]).toDestination();
+    panner.pan.rampTo(composicao[frameS + 1][i + 1]);
+    //gainNode.gain.rampTo(composicao[frameS + 1][i + 2]);
   }
+
+  let time = 1
+  const gainNode = new Tone.Gain(0.4).toDestination();
+  //const panner = new Tone.Panner(1).toDestination();
+  //panner.pan.rampTo(-1, 0.5);
   let config = {
     type: "sine", // Tipo de onda (pode ser "sine", "sawtooth", "square", "triangle", etc.)
-    frequency: freq, //"C4" Frequência da nota (por exemplo, "C4" para a nota Dó na oitava 4)
+    frequency: "C1", //"C4" Frequência da nota (por exemplo, "C4" para a nota Dó na oitava 4)
   }
   console.log(config)
   const osc = new Tone.Oscillator(config).connect(panner).connect(gainNode).connect(panner).start(frameS).stop(frameS + time);
+
 }
 
 ////////////////////////////////////////////// Play Music ///////////////////////////////////////////////////
@@ -198,13 +225,15 @@ playButton.addEventListener('click', function () {
   for (let frameS = 0; frameS < composicao.length; frameS++) {
     console.log("Frame: ", frameS);
     for (let i = 0; i < composicao[frameS].length; i += 3) {
-      //playSweep(frameS, time, composicao[frameS][i], composicao[frameS][i + 1], composicao[frameS][i + 2])
+      playSweep(frameS, time, composicao[frameS][i], composicao[frameS][i + 1], composicao[frameS][i + 2])
       console.log(frameS, time, composicao[frameS][i], composicao[frameS][i + 1], composicao[frameS][i + 2]);
     }
     setTimeout(function () {
       currentFrameIndex = frameS
       displayCurrentFrame()
-      playSweep2(frameS)
+      for (let i = 0; i < composicao[frameS].length; i += 3) {
+        //playSweep2(frameS,i)
+      }
     }, frameS * 1000);
   }
 });
