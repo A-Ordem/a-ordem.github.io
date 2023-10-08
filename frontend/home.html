@@ -13,7 +13,7 @@
             <div class="right-div">
                 <div id="cratingSound">
                     <h1 class="h1">Creating Sound</h1>
-                    <input type="file" id="imageInput" accept="image/*">
+                    <!-- <input type="file" id="imageInput" accept="image/*"> -->
                     <div id="frames"></div>
 
                     <div id="boombox">
@@ -21,14 +21,8 @@
                 
                     <div class="boombox-body">
                         <section class="tape">
-                        <!-- <audio src="outfoxing.mp3" crossorigin="anonymous"></audio> -->
-                        <audio src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/858/outfoxing.mp3" crossorigin="anonymous"></audio>
-                
-                        <!-- 			type="audio/mpeg" -->
-                        <button data-playing="false" class="tape-controls-play" role="switch" aria-checked="false">
-                            <span>Play Music</span>
-                        </button>
                         <button id="generateMusic">Generate Music</button>
+                        <button id="playMusic">Play Music</button>
                         <canvas id="imageCanvas"></canvas>
                         </section>
                     </div>
@@ -46,10 +40,11 @@
 
             <input type="file" accept="video/*" id="videoInput">
             
-            <button id="prevButton">Previous</button>
-            <button id="nextButton">Next</button>
+            <!-- <button id="prevButton">Previous</button> 
+            <button id="nextButton">Next</button> -->
 
             <script src="/backend/video/videoHandeling.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/tone"></script>
 
             </div>
         </div>

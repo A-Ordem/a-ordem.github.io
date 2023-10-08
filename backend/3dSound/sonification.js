@@ -3,7 +3,7 @@
 const musicPlayer = document.getElementById('musicPlayer');
 const generateMusicButton = document.getElementById('generateMusic');
 const imageCanvas = document.getElementById('imageCanvas');
-const playButton = document.querySelector(".tape-controls-play");
+const playButton = document.getElementById("playMusic");
 
 ////////////////////////////////////////////// Image Processing ///////////////////////////////////////////////////
 let pixelData = null;
@@ -76,7 +76,7 @@ generateMusicButton.addEventListener('click', function () {
     alert('Please select an image first.');
     return;
   }
-  
+
   for (let frameS = 0; frameS < framesList.length; frameS++) {
     let media = 0
     for (let i = 0; i < 2 * Qx * Qy; i += 2) {
@@ -108,16 +108,18 @@ generateMusicButton.addEventListener('click', function () {
     let cd = [];
     for (let i = 0; i < filtrada.length; i += 2) {
       let lateral = (((filtrada[i + 1]) % Qx) - 3) / 3
-      let oitava = .5
+      //let oitava = .5
       let vertical = Math.floor(filtrada[i + 1] / Qx)
       let vol = (0.5 * filtrada[i]) / Math.max(...filtrada)
-      const notas = [265, 250, 220, 200, 175, 165, 150, 130]
-      cd.push(notas[vertical] * oitava, lateral, vol)
+      //const notas = [265, 250, 220, 200, 175, 165, 150, 130]
+      const notas = ["C2", "B2", "A2", "G1", "F1", "E1", "D1", "C1"]
+      //cd.push(notas[vertical] * oitava, lateral, vol)
+      cd.push(notas[vertical], lateral, vol)
     }
     composicao.push(cd);
   }
   console.log(composicao)
-  
+
 });
 
 ////////////////////////////////////////////// Player ///////////////////////////////////////////////////
@@ -126,54 +128,48 @@ let releaseTime = 0;
 
 // Expose attack time & release time
 const sweepLength = 1;
-function playSweep(time, freq, panVal, vol,audioCtx) {
-  //const audioCtx = new AudioContext();
+function playSweep(frameS, time, freq, panVal, vol) {
 
-  let wave = new PeriodicWave(audioCtx, {
-    real: wavetable.real,//chage here
-    imag: wavetable.imag,
-  });
+  ///////
+  //const synth = new Tone.PolySynth(Tone.Synth).toDestination();
+  //const now = Tone.now()
+  //synth.triggerAttack("D4", now + frameS);
+  //synth.triggerRelease(["D4", "F4", "A4", "C5", "E5"], now + frameS + 1);
 
-  const osc = new OscillatorNode(audioCtx, {
-    frequency: freq,
-    type: "custom",
-    periodicWave: wave,
-  });
+  // move the input signal from right to left
+  const panner = new Tone.Panner(panVal).toDestination();
+  const gainNode = new Tone.Gain(vol).toDestination();
+  //const synth = new Tone.PolySynth(Tone.Synth).toDestination();
+  //synth.triggerAttackRelease("E4", "1s");
+  //synth.set("detune", -1200);
+  //panner.pan.rampTo(-1, 0.5);
 
-  // Create the node that controls the volume.
-  const gainNode = new GainNode(audioCtx);
-  gainNode.gain.value = vol
+  let config = {
+    type: "sine", // Tipo de onda (pode ser "sine", "sawtooth", "square", "triangle", etc.)
+    frequency: freq, //"C4" Frequência da nota (por exemplo, "C4" para a nota Dó na oitava 4)
+  }
+  console.log(config)
+  const osc = new Tone.Oscillator(config).connect(panner).connect(gainNode).connect(panner).start(frameS).stop(frameS + time);
+  //const synth = new Tone.PolySynth().connect(panner).connect(gainNode).start(frameS).stop(frameS + time);
 
-  // Create the node that controls the panning
-  const panner = new StereoPannerNode(audioCtx, { pan: 0 });
-  panner.pan.value = panVal; //-1 - 1
-
-  osc.connect(gainNode).connect(panner).connect(audioCtx.destination);
-  //osc.start(time);
- // osc.stop(time + sweepLength);
-  osc.start(0);
-  osc.stop(time);
 }
 
 ////////////////////////////////////////////// Play Music ///////////////////////////////////////////////////
-
-playButton.addEventListener(
-  "click",
-  () => {
+const AudioContext = window.AudioContext || window.webkitAudioContext;
+const audioCtx = new AudioContext();
+playButton.addEventListener('click', function () {
     let time = 1
     console.log("play")
-    const audioCtx = new AudioContext();
+    audioCtx.resume()
     for (let frameS = 0; frameS < composicao.length; frameS++) {
+      console.log("Frame: ", frameS);
+      for (let i = 0; i < composicao[frameS].length; i += 3) {
+        playSweep(frameS, time, composicao[frameS][i], composicao[frameS][i + 1], composicao[frameS][i + 2])
+        console.log(frameS, time, composicao[frameS][i], composicao[frameS][i + 1], composicao[frameS][i + 2]);
+      }
       setTimeout(function () {
-        console.log("Frame: ", frameS);
-        for (let i = 0; i < composicao[frameS].length; i += 3) {
-          
-          playSweep(time, composicao[frameS][i], composicao[frameS][i + 1], composicao[frameS][i + 2],audioCtx)
-          console.log(time, composicao[frameS][i], composicao[frameS][i + 1], composicao[frameS][i + 2]);
-          currentFrameIndex = frameS
-          displayCurrentFrame()
-        }
+        currentFrameIndex = frameS
+        displayCurrentFrame()
       }, frameS * 1000);
     }
-  },
-);//de
+  });

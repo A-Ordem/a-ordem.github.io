@@ -44,7 +44,7 @@ function extractFrames(video) {
         loadVideo();
       }, 5000); // 1000 milissegundos = 1 segundos
 }
-
+    /*
 document.getElementById("prevButton").addEventListener("click", function () {
     if (currentFrameIndex > 0) {
         currentFrameIndex--;
@@ -57,7 +57,7 @@ document.getElementById("nextButton").addEventListener("click", function () {
         currentFrameIndex++;
         displayCurrentFrame();
     }
-});
+});*/
 
 function displayCurrentFrame() {
     const framesDiv = document.getElementById("frames");
