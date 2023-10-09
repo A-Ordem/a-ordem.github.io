@@ -6,15 +6,17 @@
     <title>Fly Through Sonification</title>
     <link href="https://fonts.cdnfonts.com/css/agency-fb" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="style/style.css">
+    <link rel="stylesheet" type="text/css" href="style/main.css">
+    <link rel="stylesheet" type="text/css" href="style/home.css">
+    <link rel="stylesheet" type="text/css" href="style/selectfile.css">
 </head>
 <body>
-    <canvas id="background-canvas"></canvas>
+    <!-- <canvas id="background-canvas"></canvas>
     
     <div id="home">
         <div class="start-container">
             <h1>BE READY TO EMBARK ON OUR JOURNEY THROUGH SOUND</h1>
-            <button>START</button>
+            <button id="start-button">START</button>
         </div>
 
         <div class="recommendation" style="left: 0;">
@@ -28,11 +30,42 @@
         </div>
     </div>
 
-    <div id="select-file" style="display: none;">
+    <div id="select-file" class="hide">
+        <h2>PICK UP YOUR DESTINY ...</h2>
 
-    </div>
+        <div class="input-container">
+        <input type="file" accept="video/*" id="videoInput">
 
-    <div class="container" style="display: none;">
+        <div class="container noselect">
+  
+            <label for="checkbox" id="clickHandler"></label>
+            <input type="checkbox" id="checkbox">
+          
+            <button id="button">
+              <p id="to-launch">let's launch!</p>
+              <p id="tag">by kennyotsu &lt;3</p>
+              <div id="platform"></div>
+            <div class="caution">
+              <div id="caution-left">LAUNCH ZONE</div>
+              <div id="caution-right">LAUNCH ZONE</div>
+            </div>
+            </button>
+            
+            <p id="to-hover">hover me</p>
+            <div id="shuttle-wrapper">
+              
+              <div id="shadow"></div>
+
+              <svg src="/assets/imgs/launch-button.svg"></svg>
+
+            </div>
+          
+          </div>
+          
+
+    </div> -->
+
+    <div class="container" >
         <div class="left-div">
             <!-- Parte de Vídeo -->
             <h1>Video Frame Extraction</h1>
@@ -65,5 +98,6 @@
     <script src="/scripts/videoHandeling.js"></script>
     <script src="/scripts/sonification.js"></script>
     <script src="/scripts/background.js"></script>
+    <script src="/scripts/navigation.js"></script>
 </body>
 </html>

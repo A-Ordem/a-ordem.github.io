@@ -1,0 +1,25 @@
+/* 
+body {
+  background-image: url('/assets/bg.png');
+  background-color: #cccccc;
+  color: white;
+
+  font-size: 12pt;
+  font-family: Baluda;
+  font-weight: bold;
+} */
+
+* { 
+  padding: 0;
+  margin: 0;
+
+  font-family: 'Agency FB', sans-serif;
+}
+
+body {
+  background-color: #000000;
+}
+
+.hide {
+  display: none !important;
+}
