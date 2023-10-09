@@ -35,6 +35,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 30px;
+  padding: 0 15px;
 }
 
 #home h1 {
