@@ -1,0 +1,16 @@
+
+#select-file {
+    width: 100vw;
+    height: 100vh;
+}
+
+#select-file h2 {
+    color: white;
+    font-size: 28pt;
+    padding: 50px 10%;
+}
+
+#select-file .input-container {
+    width: fit-content;
+    margin: auto;
+}
