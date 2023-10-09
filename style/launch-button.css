@@ -107,14 +107,14 @@
     animation-duration: 6s;
 }
   
-#checkbox:checked ~ #button #to-launch {
+#checkbox:checked ~ #launch-button #to-launch {
     -webkit-animation-name: fadeout_010;
     animation-name: fadeout_010;
     -webkit-animation-duration: 6s;
     animation-duration: 6s;
 }
     /* and this will take care of hover */
-#clickHandler:hover ~ #button {
+#clickHandler:hover ~ #launch-button {
     width: 200px;
     height: 200px;
     -webkit-transform: translate3d(0px, -16px, 0px) rotateX(51deg) rotateZ(43deg);
@@ -134,8 +134,8 @@
 }
   
 #to-launch {
-    color: rgb(1, 85, 255);
-    font-size: large;
+    color: black;
+    font-size: 24pt;
     font-weight: bold;
     -webkit-transition: ease-out 200ms;
     transition: ease-out 200ms;
@@ -171,7 +171,7 @@
     outline-offset: 0px;
   }
   
-  #clickHandler:hover ~ #button #platform {
+  #clickHandler:hover ~ #launch-button #platform {
     height: 70%;
     background: rgb(244, 244, 244);
     border: solid 4px rgb(42, 42, 42);
@@ -214,21 +214,21 @@
     transform: translate3d(0px, 62px, 0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg);
   }
   
-  #clickHandler:hover ~ #button .caution #caution-left {
+  #clickHandler:hover ~ #launch-button .caution #caution-left {
     opacity: 1;
     -webkit-transition: 400ms ease-in;
     transition: 400ms ease-in;
     animation: glow_010 1.2s infinite;
   }
   
-  #clickHandler:hover ~ #button .caution #caution-right {
+  #clickHandler:hover ~ #launch-button .caution #caution-right {
     opacity: 1;
     -webkit-transition: 400ms ease-in;
     transition: 400ms ease-in;
     animation: glow_010 1.2s infinite;
   }
   
-  #button {
+  #launch-button {
     width: 200px;
     height: 80px;
     border: none;
@@ -253,7 +253,7 @@
     transition-delay: 100ms;
   }
   
-  #clickHandler:hover ~ #button #to-launch {
+  #clickHandler:hover ~ #launch-button #to-launch {
     opacity: 0;
   }
   
@@ -261,7 +261,7 @@
     opacity: 0;
   }
   
-  #checkbox:checked ~ #button #tag {
+  #checkbox:checked ~ #launch-button #tag {
     -webkit-animation: tag-transition 5s ease-in-out;
     animation: tag-transition 5s ease-in-out;
   }

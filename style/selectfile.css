@@ -1,5 +1,6 @@
 
 #select-file {
+    position: relative;
     width: 100vw;
     height: 100vh;
 }
@@ -13,4 +14,24 @@
 #select-file .input-container {
     width: fit-content;
     margin: auto;
+}
+
+#select-file input {
+    color: white;
+    margin-bottom: 100px;
+}
+
+#select-file .recommendation {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}
+
+#select-file .recommendation a {
+    margin-top: 5px;
+    text-decoration: none;
+    color: white;
+    border: thin solid white;
+    border-radius: 5px;
+    padding: 3px;
 }
