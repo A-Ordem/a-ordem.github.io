@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=2.0">
+    <title>Fly Through Sonification</title>
+    <link href="https://fonts.cdnfonts.com/css/agency-fb" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="style/style.css">
+</head>
+<body>
+    <canvas id="background-canvas"></canvas>
+    
+    <div id="home">
+        <div class="start-container">
+            <h1>BE READY TO EMBARK ON OUR JOURNEY THROUGH SOUND</h1>
+            <button>START</button>
+        </div>
+
+        <div class="recommendation" style="left: 0;">
+            <img src="/assets/imgs/f11.png">
+            <p>USE FULL SCREEN MODE FOR THE BEST EXPERIENCE</p>
+        </div>
+
+        <div class="recommendation" style="right: 0;">
+            <i class="fa-solid fa-headphones-simple"></i>
+            <p>USE EARPHONES FOR THE BEST EXPERIENCE</p>
+        </div>
+    </div>
+
+    <div id="select-file" style="display: none;">
+
+    </div>
+
+    <div class="container" style="display: none;">
+        <div class="left-div">
+            <!-- Parte de Vídeo -->
+            <h1>Video Frame Extraction</h1>
+            <input type="file" accept="video/*" id="videoInput">
+            <canvas id="imageCanvas"></canvas>
+            <!-- <button id="prevButton">Previous</button> 
+            <button id="nextButton">Next</button> -->
+        </div>
+        
+        <div class="right-div">
+            <!-- Parte de Som -->
+            <h1 class="h1">Creating Sound</h1>
+            <!-- <input type="file" id="imageInput" accept="image/*"> -->
+
+            <div id="boombox">
+                <div class="boombox-handle"></div>
+                
+                <div class="boombox-body">
+                    <section class="tape">
+                        <button id="generateMusic">Generate Music</button>
+                        <button id="playMusic">Play Music</button>
+                        <div id="frames"></div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/tone"></script>
+    <script src="/scripts/videoHandeling.js"></script>
+    <script src="/scripts/sonification.js"></script>
+    <script src="/scripts/background.js"></script>
+</body>
+</html>
