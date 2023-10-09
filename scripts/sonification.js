@@ -1,9 +1,7 @@
 ////////////////////////////////////////////// UI ///////////////////////////////////////////////////
 //const videoInput = document.getElementById('videoInput');
 const musicPlayer = document.getElementById('musicPlayer');
-const generateMusicButton = document.getElementById('generateMusic');
 const imageCanvas = document.getElementById('imageCanvas');
-const playButton = document.getElementById("playMusic");
 
 ////////////////////////////////////////////// Image Processing ///////////////////////////////////////////////////
 let pixelData = null;
@@ -72,8 +70,8 @@ function loadVideo() {
 ////////////////////////////////////////////// Image Converter ///////////////////////////////////////////////////
 let composicao = []
 
-generateMusicButton.addEventListener('click', function () {
-  if (!memoryCard) {
+function generateMusic() {
+  if (memoryCard.length == 0) {
     alert('Please select an image first.');
     return;
   }
@@ -123,7 +121,7 @@ generateMusicButton.addEventListener('click', function () {
   }
   console.log(composicao)
 
-});
+};
 
 ////////////////////////////////////////////// Player ///////////////////////////////////////////////////
 
@@ -179,19 +177,18 @@ function playSweep4(frameS, time) {
 
 const AudioContext = window.AudioContext || window.webkitAudioContext;
 const audioCtx = new AudioContext();
-playButton.addEventListener('click', function () {
+function playMusic() {
   let time = 1
   console.log("play")
   audioCtx.resume()
   for (let frameS = 0; frameS < composicao.length; frameS++) {
     console.log("Frame: ", frameS);
     setTimeout(function () {
-      currentFrameIndex = frameS
-      displayCurrentFrame()
+      currentFrameIndex = frameS;
       for (let i = 0; i < composicao[frameS].length; i += 3) {
         console.log(frameS, time, composicao[frameS][i], composicao[frameS][i + 1], composicao[frameS][i + 2]);
       }
       playSweep4(frameS, time)
     }, frameS * 1000);
   }
-});
+};

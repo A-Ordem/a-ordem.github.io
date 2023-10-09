@@ -1,16 +1,24 @@
+const presentationScreen = document.getElementById("presentation");
+
 document.getElementById("videoInput").addEventListener("change", handleVideoSelect);
 let framesList = [];
 let currentFrameIndex = 0;
+
+let videoElement, videoShow;
 
 function handleVideoSelect(event) {
     const file = event.target.files[0];
     if (file) {
         const videoURL = URL.createObjectURL(file);
-        const videoElement = document.createElement("video");
+        videoElement = document.createElement("video");
         videoElement.src = videoURL;
         videoElement.onloadeddata = function () {
             extractFrames(videoElement);
         };
+        
+        videoShow = document.createElement("video");
+        videoShow.src = videoURL;
+        presentationScreen.appendChild(videoShow);
     }
 }
 
@@ -19,8 +27,6 @@ function extractFrames(video) {
     const context = canvas.getContext("2d");
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
-
-    const framesDiv = document.getElementById("frames");
 
     video.onseeked = function () {
         context.drawImage(video, 0, 0, canvas.width, canvas.height);
@@ -40,7 +46,6 @@ function extractFrames(video) {
     video.currentTime = 0;
     
     setTimeout(function () {
-        displayCurrentFrame();
         loadVideo();
       }, video.duration*1000/6); // 1000 milissegundos = 1 segundos
 }
@@ -58,6 +63,10 @@ document.getElementById("nextButton").addEventListener("click", function () {
         displayCurrentFrame();
     }
 });*/
+
+function playVideo() {
+    videoShow.play();
+}
 
 function displayCurrentFrame() {
     const framesDiv = document.getElementById("frames");

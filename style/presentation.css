@@ -1,0 +1,13 @@
+#presentation {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+
+    overflow: hidden;
+}
+
+#presentation video {
+    max-width: 100%;
+    max-height: 100%;
+    margin: auto;
+}

@@ -10,6 +10,7 @@
     <link rel="stylesheet" type="text/css" href="style/home.css">
     <link rel="stylesheet" type="text/css" href="style/selectfile.css">
     <link rel="stylesheet" type="text/css" href="style/launch-button.css">
+    <link rel="stylesheet" type="text/css" href="style/presentation.css">
 </head>
 <body>
     <canvas id="background-canvas"></canvas>
@@ -29,6 +30,10 @@
             <i class="fa-solid fa-headphones-simple"></i>
             <p>USE EARPHONES FOR THE BEST EXPERIENCE</p>
         </div>
+    </div>
+
+    <div id="presentation" class="hide">
+
     </div>
 
     <div id="select-file" class="hide">
@@ -71,35 +76,8 @@
         
     </div>
 
-    <div class="container hide">
-        <div class="left-div">
-            <!-- Parte de Vídeo -->
-            <h1>Video Frame Extraction</h1>
-            <input type="file" accept="video/*" id="videoInput">
-            <canvas id="imageCanvas"></canvas>
-            <!-- <button id="prevButton">Previous</button> 
-            <button id="nextButton">Next</button> -->
-        </div>
-        
-        <div class="right-div">
-            <!-- Parte de Som -->
-            <h1 class="h1">Creating Sound</h1>
-            <!-- <input type="file" id="imageInput" accept="image/*"> -->
-
-            <div id="boombox">
-                <div class="boombox-handle"></div>
-                
-                <div class="boombox-body">
-                    <section class="tape">
-                        <button id="generateMusic">Generate Music</button>
-                        <button id="playMusic">Play Music</button>
-                        <div id="frames"></div>
-                    </section>
-                </div>
-            </div>
-        </div>
-    </div>
-
+    <canvas id="imageCanvas" class="hide"></canvas>
+    
     <script src="https://cdn.jsdelivr.net/npm/tone"></script>
     <script src="/scripts/videoHandeling.js"></script>
     <script src="/scripts/sonification.js"></script>
