@@ -132,47 +132,47 @@ const sweepLength = 1;
 function playSweep4(frameS, time) {
 
   // Crie um PolySynth com as opções desejadas
-const polySynth = new Tone.PolySynth().toDestination();
+  const polySynth = new Tone.PolySynth().toDestination();
 
-// Crie um Panner (Panoramizador)
-const panner = new Tone.Panner(0).toDestination(); // Inicialmente, o panoramizador é configurado para o centro (0).
-const gain = new Tone.Gain(1).toDestination();
-// Conecte o PolySynth ao Panner
-polySynth.connect(panner);
-polySynth.connect(gain);
+  // Crie um Panner (Panoramizador)
+  const panner = new Tone.Panner(0).toDestination(); // Inicialmente, o panoramizador é configurado para o centro (0).
+  const gain = new Tone.Gain(1).toDestination();
+  // Conecte o PolySynth ao Panner
+  polySynth.connect(panner);
+  polySynth.connect(gain);
 
-// Defina as opções de síntese que você deseja para as notas
-const synthOptions = {
-  oscillator: {
-    type: "sine", // Tipo de forma de onda (pode ser "sine", "sawtooth", "square", "triangle", etc.)
-  },
-  envelope: {
-    attack: 0.1, // Duração do ataque em segundos
-    decay: 0.2, // Duração do decay em segundos
-    sustain: 0.5, // Nível de sustain (de 0 a 1)
-    release: 0.5, // Duração do release em segundos
-  },
-};
+  // Defina as opções de síntese que você deseja para as notas
+  const synthOptions = {
+    oscillator: {
+      type: "sine", // Tipo de forma de onda (pode ser "sine", "sawtooth", "square", "triangle", etc.)
+    },
+    envelope: {
+      attack: 0.1, // Duração do ataque em segundos
+      decay: 0.2, // Duração do decay em segundos
+      sustain: 0.5, // Nível de sustain (de 0 a 1)
+      release: 0.5, // Duração do release em segundos
+    },
+  };
 
-// Configure as opções de síntese para o PolySynth
-polySynth.set(synthOptions);
+  // Configure as opções de síntese para o PolySynth
+  polySynth.set(synthOptions);
 
-// Toque várias notas ao mesmo tempo com panoramização
-let notas = [];
-let panPositions = [];
-let volume = [];
+  // Toque várias notas ao mesmo tempo com panoramização
+  let notas = [];
+  let panPositions = [];
+  let volume = [];
   // Toque várias notas ao mesmo tempo
   for (let i = 0; i < composicao[frameS].length; i += 3) {
     notas.push(composicao[frameS][i])
-    panPositions.push(composicao[frameS][i+1])
-    volume.push(composicao[frameS][i+2])
+    panPositions.push(composicao[frameS][i + 1])
+    volume.push(composicao[frameS][i + 2])
   }
 
-notas.forEach((nota, index) => {
-  polySynth.triggerAttackRelease(nota, 1);
-  panner.pan.value = panPositions[index]; // Ajusta a panoramização para a nota atual
-  gain.gain.value = volume[index]; // Ajusta a panoramização para a nota atual
-});
+  notas.forEach((nota, index) => {
+    polySynth.triggerAttackRelease(nota, 1);
+    panner.pan.value = panPositions[index]; // Ajusta a panoramização para a nota atual
+    gain.gain.value = volume[index]; // Ajusta a panoramização para a nota atual
+  });
 }
 
 ////////////////////////////////////////////// Play Music ///////////////////////////////////////////////////
