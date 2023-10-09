@@ -114,8 +114,8 @@ generateMusicButton.addEventListener('click', function () {
       //let oitava = .5
       let vertical = Math.floor(filtrada[i + 1] / Qx)
       let vol = (0.2 * filtrada[i]) / Math.max(...filtrada)
-      //const notas = [265, 250, 220, 200, 175, 165, 150, 130]
-      const notas = ["C2", "B2", "A2", "G1", "F1", "E1", "D1", "C1"]
+      //const notas = ["C2", "B2", "A2", "G1", "F1", "E1", "D1", "C1"]
+      const notas = ["C3", "B3", "A3", "G2", "F2", "E2", "D2", "C2"]
       //cd.push(notas[vertical] * oitava, lateral, vol)
       cd.push(notas[vertical], lateral, vol)
     }
@@ -126,70 +126,53 @@ generateMusicButton.addEventListener('click', function () {
 });
 
 ////////////////////////////////////////////// Player ///////////////////////////////////////////////////
-//let attackTime = 0;
-//let releaseTime = 0;
 
 // Expose attack time & release time
 const sweepLength = 1;
-function playSweep(frameS, time, freq, panVal, vol) {
+function playSweep4(frameS, time) {
 
-  const panner = new Tone.Panner(panVal).toDestination();
-  const gainNode = new Tone.Gain(vol).toDestination();
+  // Crie um PolySynth com as opções desejadas
+const polySynth = new Tone.PolySynth().toDestination();
 
-  let config = {
-    frequency: freq, //"C4" Frequência da nota (por exemplo, "C4" para a nota Dó na oitava 4)
+// Crie um Panner (Panoramizador)
+const panner = new Tone.Panner(0).toDestination(); // Inicialmente, o panoramizador é configurado para o centro (0).
+const gain = new Tone.Gain(1).toDestination();
+// Conecte o PolySynth ao Panner
+polySynth.connect(panner);
+polySynth.connect(gain);
 
-    harmonicity: 3, // Índice que controla a quantidade de modulação de frequência
-    modulationIndex: 10, // Índice que controla a intensidade da modulação de frequência
-    detune: 0, // Alteração fina na afinação da nota em cents
-    oscillator: {
-      type: "sine" // Tipo de onda do operador de modulação
-    },
-    envelope: {
-      attack: 0.05, // Duração do ataque em segundos
-      decay: 0.2, // Duração do decay em segundos
-      sustain: 0.5, // Nível de sustain (de 0 a 1)
-      release: 1 // Duração do release em segundos
-    }
+// Defina as opções de síntese que você deseja para as notas
+const synthOptions = {
+  oscillator: {
+    type: "sine", // Tipo de forma de onda (pode ser "sine", "sawtooth", "square", "triangle", etc.)
+  },
+  envelope: {
+    attack: 0.1, // Duração do ataque em segundos
+    decay: 0.2, // Duração do decay em segundos
+    sustain: 0.5, // Nível de sustain (de 0 a 1)
+    release: 0.5, // Duração do release em segundos
+  },
+};
+
+// Configure as opções de síntese para o PolySynth
+polySynth.set(synthOptions);
+
+// Toque várias notas ao mesmo tempo com panoramização
+let notas = [];
+let panPositions = [];
+let volume = [];
+  // Toque várias notas ao mesmo tempo
+  for (let i = 0; i < composicao[frameS].length; i += 3) {
+    notas.push(composicao[frameS][i])
+    panPositions.push(composicao[frameS][i+1])
+    volume.push(composicao[frameS][i+2])
   }
 
-  const fmSynth = new Tone.FMSynth(config).connect(panner).connect(gainNode);
-  fmSynth.triggerAttackRelease(freq, time)
-}
-
-function playSweep3(frameS, i, panner, gainNode, fmSynth) {
-  let time = 1
-  let freq = composicao[frameS][i]
-  //const gainNode = new Tone.Gain(0.4).toDestination();
-  //const panner = new Tone.Panner(1).toDestination();
-  //panner.pan.rampTo(-1, 0.5);
-  panner.pan.rampTo(composicao[frameS][i + 1]);
-  gainNode.gain.rampTo(composicao[frameS][i + 2] * 0.2);
-
-  let config = {
-    type: "sine", // Tipo de onda (pode ser "sine", "sawtooth", "square", "triangle", etc.)
-    frequency: composicao[frameS][i], //"C4" Frequência da nota (por exemplo, "C4" para a nota Dó na oitava 4)
-  }
-
-  const osc = new Tone.Oscillator(config).connect(panner).connect(gainNode).start(frameS).stop(frameS + time);
-  //fmSynth.triggerAttackRelease(freq, time).toDestination()
-}
-
-function playSweep2(frameS, i, a, b) {
-  let time = 1
-  const gainNode = new Tone.Gain(0.4).toDestination();
-  const panner = new Tone.Panner(1).toDestination();
-  panner.pan.rampTo(-1, 0.5);
-  //const panner = new Tone.Panner(0).toDestination();
-  //const gainNode = new Tone.Gain(0).toDestination();
-  //panner.pan.rampTo(composicao[frameS][i + 1]);
-  //gainNode.gain.rampTo(composicao[frameS][i + 2]);
-  let config = {
-    type: "sine", // Tipo de onda (pode ser "sine", "sawtooth", "square", "triangle", etc.)
-    frequency: composicao[frameS][i], //"C4" Frequência da nota (por exemplo, "C4" para a nota Dó na oitava 4)
-  }
-  console.log(config)
-  const osc = new Tone.Oscillator(config).connect(panner).connect(gainNode).start(frameS).stop(frameS + time);
+notas.forEach((nota, index) => {
+  polySynth.triggerAttackRelease(nota, 1);
+  panner.pan.value = panPositions[index]; // Ajusta a panoramização para a nota atual
+  gain.gain.value = volume[index]; // Ajusta a panoramização para a nota atual
+});
 }
 
 ////////////////////////////////////////////// Play Music ///////////////////////////////////////////////////
@@ -199,79 +182,16 @@ const audioCtx = new AudioContext();
 playButton.addEventListener('click', function () {
   let time = 1
   console.log("play")
-  audioCtx.suspend()
   audioCtx.resume()
-  
   for (let frameS = 0; frameS < composicao.length; frameS++) {
     console.log("Frame: ", frameS);
-    for (let i = 0; i < composicao[frameS].length; i += 3) {
-      //playSweep(frameS, time, composicao[frameS][i], composicao[frameS][i + 1], composicao[frameS][i + 2])
-      playSweep2(frameS, i, 0, 1)
-      console.log(frameS, time, composicao[frameS][i], composicao[frameS][i + 1], composicao[frameS][i + 2]);
-    }
     setTimeout(function () {
       currentFrameIndex = frameS
       displayCurrentFrame()
       for (let i = 0; i < composicao[frameS].length; i += 3) {
-        playSweep(frameS, time, composicao[frameS][i], composicao[frameS][i + 1], composicao[frameS][i + 2])
+        console.log(frameS, time, composicao[frameS][i], composicao[frameS][i + 1], composicao[frameS][i + 2]);
       }
+      playSweep4(frameS, time)
     }, frameS * 1000);
   }
 });
-
-
-
-
-
-/*
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////
-const AudioContext = window.AudioContext || window.webkitAudioContext;
-const audioCtx = new AudioContext();
-playButton.addEventListener('click', function () {
-  let time = 1
-  console.log("play")
-
-  audioCtx.resume()
-
-  const panner = new Tone.Panner(0).toDestination();
-  const gainNode = new Tone.Gain(0).toDestination();
-  
-  let config = {
-    harmonicity: 3, // Índice que controla a quantidade de modulação de frequência
-    modulationIndex: 10, // Índice que controla a intensidade da modulação de frequência
-    detune: 0, // Alteração fina na afinação da nota em cents
-    oscillator: {
-      type: "sine" // Tipo de onda do operador de modulação
-    },
-    envelope: {
-      attack: 0.05, // Duração do ataque em segundos
-      decay: 0.2, // Duração do decay em segundos
-      sustain: 0.5, // Nível de sustain (de 0 a 1)
-      release: 0.5 // Duração do release em segundos
-    }
-  }
-
-  //Tone.Transport.start();
-  //const fmSynth = new Tone.FMSynth(config).connect(panner).connect(gainNode);
-
-  for (let frameS = 0; frameS < composicao.length; frameS++) {
-    console.log("Frame: ", frameS);
-    for (let i = 0; i < composicao[frameS].length; i += 3) {
-      //playSweep(frameS, time, composicao[frameS][i], composicao[frameS][i + 1], composicao[frameS][i + 2])
-      console.log(frameS, time, composicao[frameS][i], composicao[frameS][i + 1], composicao[frameS][i + 2]);
-    }
-    setTimeout(function () {
-      currentFrameIndex = frameS
-      displayCurrentFrame()
-      for (let i = 0; i < composicao[frameS].length; i += 3) {
-        //playSweep(frameS, time, composicao[frameS][i], composicao[frameS][i + 1], composicao[frameS][i + 2])
-        //playSweep2(frameS, i, panner, gainNode, fmSynth)
-        playSweep2(frameS, i, panner, gainNode)
-      }
-      if (currentFrameIndex == composicao.length - 1) {
-        audioCtx.suspend()
-      }
-    }, frameS * 1000);
-  }
-});*/
